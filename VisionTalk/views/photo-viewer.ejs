@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VisionTalk - Photo Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 300;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      margin: 10px 0 0 0;
+      opacity: 0.8;
+      font-size: 1.1em;
+    }
+
+    .photo-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+
+    .photo {
+      max-width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .photo:hover {
+      transform: scale(1.02);
+    }
+
+    .no-photo, .loading {
+      text-align: center;
+      font-size: 1.2em;
+      opacity: 0.8;
+      padding: 40px;
+    }
+
+    .loading {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 0.4; }
+      100% { opacity: 0.8; }
+    }
+
+    .instructions {
+      margin-top: 20px;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+
+    .status {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 0.8em;
+    }
+  </style>
+</head>
+<body>
+  <div class="status" id="status">Checking connection...</div>
+  
+  <div class="container">
+    <div class="header">
+      <h1>🔍 VisionTalk</h1>
+      <p>AI-powered visual reasoning assistant</p>
+    </div>
+    
+    <div class="photo-container">
+      <div id="content" class="loading">Waiting for photos from your Mentra glasses...</div>
+    </div>
+    
+    <div class="instructions">
+      <strong>How to use:</strong><br>
+      Put on your Mentra glasses, look at anything interesting,<br>
+      and press the button to capture and analyze what you see.
+    </div>
+  </div>
+
+  <script>
+    let currentRequestId = null;
+    let connectionStatus = 'checking';
+
+    /**
+     * Update connection status indicator
+     */
+    function updateStatus(status, message) {
+      const statusEl = document.getElementById('status');
+      connectionStatus = status;
+      
+      switch(status) {
+        case 'connected':
+          statusEl.textContent = '🟢 Connected';
+          statusEl.style.background = 'rgba(34, 197, 94, 0.3)';
+          break;
+        case 'disconnected':
+          statusEl.textContent = '🔴 Disconnected';
+          statusEl.style.background = 'rgba(239, 68, 68, 0.3)';
+          break;
+        case 'checking':
+        default:
+          statusEl.textContent = '🟡 Checking...';
+          statusEl.style.background = 'rgba(255, 255, 255, 0.2)';
+      }
+    }
+
+    /**
+     * Check for new photos and update display
+     */
+    async function checkForNewPhoto() {
+      try {
+        const response = await fetch('/api/latest-photo');
+
+        if (response.status === 404) {
+          // No photo available yet
+          updateStatus('connected');
+          if (document.getElementById('content').classList.contains('loading')) {
+            document.getElementById('content').innerHTML =
+              '<div class="no-photo">No photos captured yet.<br><br>Use your Mentra glasses to take a photo of anything you want to understand!</div>';
+          }
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        updateStatus('connected');
+        const photoInfo = await response.json();
+
+        // Check if this is a new photo
+        if (photoInfo.requestId !== currentRequestId) {
+          currentRequestId = photoInfo.requestId;
+
+          // Update the display with new photo
+          document.getElementById('content').innerHTML =
+            '<img class="photo" src="/api/photo/' + photoInfo.requestId + '" alt="Latest captured image" />';
+        }
+      } catch (error) {
+        console.error('Error checking for new photo:', error);
+        updateStatus('disconnected');
+        document.getElementById('content').innerHTML =
+          '<div class="no-photo">Connection error: ' + error.message + '<br><br>Please check that the VisionTalk server is running.</div>';
+      }
+    }
+
+    // Check for new photos every 1 second
+    checkForNewPhoto(); // Initial check
+    setInterval(checkForNewPhoto, 1000);
+  </script>
+</body>
+</html>

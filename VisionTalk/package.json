@@ -1,0 +1,39 @@
+{
+  "name": "visiontalk-mentra-glasses",
+  "version": "1.0.0",
+  "description": "AI-powered visual reasoning assistant for Mentra Live smart glasses",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx --watch src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mentra",
+    "smart-glasses",
+    "ai-assistant",
+    "computer-vision",
+    "voice-interface",
+    "hackathon"
+  ],
+  "author": "VencentV",
+  "license": "MIT",
+  "dependencies": {
+    "@mentra/sdk": "^2.1.2",
+    "@types/node-fetch": "^2.6.13",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.14",
+    "@types/ws": "^8.18.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.0.0"
+  }
+}
