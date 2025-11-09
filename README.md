@@ -176,6 +176,11 @@ VisionTalk/
 - **Voice commands** - Skip button press for even more natural interaction
 - **Offline capabilities** - Local processing for privacy-sensitive scenarios
 
+## Run
+- npm run dev
+- ngrok http http://127.0.0.1:3000
+
+
 ---
 
 **Built for hackathons, optimized for learning, designed for the future.** 🚀

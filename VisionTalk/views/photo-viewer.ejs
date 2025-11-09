@@ -104,6 +104,34 @@
       border-radius: 20px;
       font-size: 0.8em;
     }
+
+    .panel {
+      margin-top: 20px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .panel h3 {
+      margin: 0 0 8px 0;
+      font-weight: 500;
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      font-size: 12px;
+      max-height: 180px;
+      overflow: auto;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      font-size: 11px;
+    }
   </style>
 </head>
 <body>
@@ -124,11 +152,24 @@
       Put on your Mentra glasses, look at anything interesting,<br>
       and press the button to capture and analyze what you see.
     </div>
+
+    <div class="panel">
+      <h3>Event timeline</h3>
+      <div id="timeline" class="timeline">
+        <div>—</div><div>Waiting for events…</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Latest photo metadata</h3>
+      <div id="meta" style="font-size:12px;opacity:0.9">No photo yet</div>
+    </div>
   </div>
 
   <script>
     let currentRequestId = null;
     let connectionStatus = 'checking';
+  let carouselLoaded = false;
 
     /**
      * Update connection status indicator
@@ -184,6 +225,9 @@
           // Update the display with new photo
           document.getElementById('content').innerHTML =
             '<img class="photo" src="/api/photo/' + photoInfo.requestId + '" alt="Latest captured image" />';
+          // Refresh carousel when new photo arrives
+          loadCarousel();
+          loadPhotoMeta(photoInfo.requestId);
         }
       } catch (error) {
         console.error('Error checking for new photo:', error);
@@ -193,9 +237,103 @@
       }
     }
 
-    // Check for new photos every 1 second
-    checkForNewPhoto(); // Initial check
-    setInterval(checkForNewPhoto, 1000);
+    async function loadCarousel() {
+      try {
+        const resp = await fetch('/api/photos');
+        if (!resp.ok) return;
+        const photos = await resp.json();
+        const existing = document.getElementById('carousel');
+        if (!existing) {
+          const c = document.createElement('div');
+          c.id = 'carousel';
+          c.style.marginTop = '20px';
+          c.style.display = 'flex';
+          c.style.gap = '8px';
+          c.style.flexWrap = 'wrap';
+          document.querySelector('.container').appendChild(c);
+        }
+        const el = document.getElementById('carousel');
+        el.innerHTML = photos.map(p => `<div style="flex:0 0 90px;display:flex;flex-direction:column;align-items:center;font-size:10px;">` +
+          `<img style=\"width:90px;height:60px;object-fit:cover;border-radius:6px;box-shadow:0 0 4px rgba(0,0,0,0.4);\" src='/api/photo/${p.requestId}' alt='${p.requestId}' />` +
+          `<span style='margin-top:4px;opacity:0.7;'>${new Date(p.timestamp).toLocaleTimeString()}</span>` +
+        `</div>`).join('');
+        carouselLoaded = true;
+      } catch {}
+    }
+
+    // Initial carousel load (after slight delay to avoid race on first boot)
+    setTimeout(() => loadCarousel(), 1200);
+
+    async function loadPhotoMeta(id) {
+      try {
+        const resp = await fetch('/api/photo-info/' + id);
+        if (!resp.ok) return;
+        const p = await resp.json();
+        const meta = document.getElementById('meta');
+        meta.innerHTML = `
+          <div><strong>requestId:</strong> ${p.requestId}</div>
+          <div><strong>timestamp:</strong> ${new Date(p.timestamp).toLocaleString()}</div>
+          <div><strong>size:</strong> ${p.size.toLocaleString()} bytes</div>
+          <div><strong>mime:</strong> ${p.mimeType}</div>
+          <div><strong>sha256:</strong> <code style="word-break:break-all">${p.sha256}</code></div>
+        `;
+      } catch {}
+    }
+
+    async function loadEvents() {
+      try {
+        const resp = await fetch('/api/events');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const events = (data.events || []).slice(-20).reverse(); // newest first
+        const t = document.getElementById('timeline');
+        if (!events.length) {
+          t.innerHTML = '<div>—</div><div>No events yet</div>';
+          return;
+        }
+        t.innerHTML = events.map(ev => {
+          const time = new Date(ev.ts).toLocaleTimeString();
+          const excerpt = ev.detail && ev.detail.excerpt ? ' — ' + ev.detail.excerpt : '';
+          return `<div>${time}</div><div><span class="badge">${ev.stage}</span>${excerpt}</div>`;
+        }).join('');
+      } catch {}
+    }
+
+    // Poll events at a relaxed cadence
+    loadEvents();
+    setInterval(loadEvents, 3000);
+
+    // Adaptive polling: fast for first 10s after load, slower when idle, faster briefly after a new photo
+    let pollIntervalMs = 1500; // start a bit slower than 1s to reduce server spam
+    let lastPhotoTs = 0;
+    let consecutiveIdleChecks = 0;
+
+    async function poll() {
+      await checkForNewPhoto();
+      const photoImg = document.querySelector('img.photo');
+      if (photoImg) {
+        // If a photo is present, we only need moderate refresh for new captures.
+        // If a NEW photo appeared (requestId changed) photoInfo timestamp logic handles content swap.
+        if (lastPhotoTs !== currentRequestId) {
+          // Burst faster for a short window to catch rapid successive captures.
+          pollIntervalMs = 1200;
+          consecutiveIdleChecks = 0;
+          lastPhotoTs = currentRequestId || 0;
+        } else {
+          consecutiveIdleChecks += 1;
+          // Gradually back off when idle (no new photos)
+          if (consecutiveIdleChecks > 5 && pollIntervalMs < 5000) pollIntervalMs += 500; // cap at 5s
+        }
+      } else {
+        // No photo yet: back off more aggressively after some time
+        consecutiveIdleChecks += 1;
+        if (consecutiveIdleChecks > 4 && pollIntervalMs < 8000) pollIntervalMs += 1000; // up to 8s
+      }
+      setTimeout(poll, pollIntervalMs);
+    }
+
+    // Kick off adaptive polling
+    poll();
   </script>
 </body>
 </html>
