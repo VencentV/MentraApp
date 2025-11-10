@@ -1,169 +1,72 @@
-[2025-11-10 12:02:05.514 -0800] INFO: ≡ƒùú∩╕Å Received session request for user izunlucky@gmail.com, session izunlucky@gmail.com-com.visiontalk.assistant
+## webview infomation--
+
+# Event timeline
+12:12:44 PM
+tts_chunk_1/5_start
+12:12:44 PM
+audio_queue_enter
+12:12:44 PM
+tts_sent_to_elevenlabs
+12:12:44 PM
+openai_response_ok — The image shows a setup that includes a workspace with two computer monitors and some wall decorations. 1. **Monitors**: - The monitor on the left displays
+12:12:31 PM
+openai_request_sent
+12:12:31 PM
+openai_request_init
+12:12:31 PM
+audio_queue_exit
+12:12:30 PM
+tts_analyzing_done
+12:12:27 PM
+tts_analyzing_start
+12:12:27 PM
+audio_queue_enter
+12:12:27 PM
+chime_done
+12:12:27 PM
+audio_queue_exit
+12:12:26 PM
+audio_queue_enter
+12:12:26 PM
+chime_play
+12:12:26 PM
+photo_received
+12:12:26 PM
+photo_request_success
+12:12:26 PM
+photo_request_ok
+12:12:24 PM
+photo_request_start
+12:12:24 PM
+photo_request_attempt
+12:12:24 PM
+photo_request
+12:12:23 PM
+audio_queue_exit
+12:12:23 PM
+tts_capture_prompt_done
+12:12:19 PM
+tts_capture_prompt_start
+12:12:19 PM
+audio_queue_enter
+12:12:19 PM
+capture_init
+12:12:14 PM
+audio_queue_exit
+12:12:12 PM
+audio_queue_enter
 
 
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-server"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.514 -0800] DEBUG: ≡ƒÜÇ [com.visiontalk.assistant] App Session initialized
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.514 -0800] DEBUG: ≡ƒÜÇ [com.visiontalk.assistant] WebSocket URL: wss://uscentralapi.mentra.glass/app-ws
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.516 -0800] INFO: Not the system dashboard: com.visiontalk.assistant
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "SDK:DashboardManager"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.517 -0800] DEBUG: ≡ƒöä Audio module session ID updated
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    newSessionId: "izunlucky@gmail.com-com.visiontalk.assistant"
-[2025-11-10 12:02:05.517 -0800] INFO: ≡ƒöî≡ƒöî≡ƒöî [com.visiontalk.assistant] Attempting to connect to: wss://uscentralapi.mentra.glass/app-ws for session izunlucky@gmail.com-com.visiontalk.assistant
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.768 -0800] DEBUG: [AppSession] CONNECTION_ACK mentraosSettings}
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.768 -0800] WARN: [AppSession] CONNECTION_ACK message missing mentraosSettings field
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.768 -0800] INFO: [AppSession] Device capabilities loaded for model: Mentra Live
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-[2025-11-10 12:02:05.768 -0800] INFO: [AppSession] updateSubscriptions: sending subscriptions to cloud
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    subscriptions: "[]"
-[2025-11-10 12:02:05.769 -0800] INFO: [AppSession] updateSubscriptions: sending subscriptions to cloud
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    subscriptions: "[\"button_press\"]"
-[VisionTalk 2025-11-10T20:02:06.616Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
-[2025-11-10 12:02:07.621 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804925770_32dt0k7"
-    success: true
-    duration: 1000
-[VisionTalk 2025-11-10T20:02:11.002Z] INFO: Button press event received {"pressType":"short","captureOnly":false}
-[2025-11-10 12:02:11.003 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    text: "Stay still while I capture the image."
-    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Stay+still+while+I+capture+the+image.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
-[2025-11-10 12:02:14.681 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804931003_su1h6c2"
-    success: true
-    duration: 1000
-DEBUG: requestPhoto options: { size: 'medium' }
-[2025-11-10 12:02:15.063 -0800] INFO: ≡ƒô╕ Photo request sent
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "photo_req_1762804935063_kzy5gnq"
-    hasCustomWebhook: false
-    hasAuthToken: false
-Received photo response:  [Object: null prototype] {
-  requestId: 'photo_req_1762804935063_kzy5gnq',
-  type: 'photo_upload'
-}
-Session token signature mismatch: f4c3928cf37c0c561063b658b5ccbd9c65f7f4a85774cb16742ebfb6cb0ae86d !== bf3e4b0fb4cfd4b772090e35e47e5e7750b7a867017fe8d3fbf521e5c55608cf
-[2025-11-10 12:02:16.571 -0800] INFO: ≡ƒô╕ Received photo response: photo_req_1762804935063_kzy5gnq (type: photo_upload)
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-server"
-    requestId: "photo_req_1762804935063_kzy5gnq"
-    type: "photo_upload"
-[2025-11-10 12:02:16.572 -0800] INFO: ≡ƒô╕ Photo received for request photo_req_1762804935063_kzy5gnq
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "photo_req_1762804935063_kzy5gnq"
-[2025-11-10 12:02:18.490 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804936573_ohbrmu7"
-    success: true
-    duration: 1000
-[2025-11-10 12:02:18.601 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    text: "Analyzing what I see..."
-    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Analyzing+what+I+see...&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
-[VisionTalk 2025-11-10T20:02:19.723Z] INFO: HTTP GET /api/photo-info/photo_req_1762804935063_kzy5gnq {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
-[VisionTalk 2025-11-10T20:02:19.725Z] INFO: HTTP GET /api/photo/photo_req_1762804935063_kzy5gnq {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"} 
-[VisionTalk 2025-11-10T20:02:19.727Z] INFO: HTTP GET /api/photos {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
-[2025-11-10 12:02:21.540 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804938601_raw68bv"
-    success: true
-    duration: 1000
-[2025-11-10 12:02:29.852 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    text: "The image is a math challenge asking you to solve the equation \(5x - 3 = 2x + 9\) for \(x\).\n\nHere's how you can solve it:\n\n1. **Get all terms involving \(x\) on one side:**\n   \[\n   5x - 2x = 9 + 3\n   \]\n\n2. **Simplify both sides:**\n   \[\n   3x = 12\n   \]\n\n3."     
-    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=The+image+is+a+math+challenge+asking+you+to+solve+the+equation+%5C%285x+-+3+%3D+2x+%2B+9%5C%29+for+%5C%28x%5C%29.%0A%0AHere%27s+how+you+can+solve+it%3A%0A%0A1.+**Get+all+terms+involving+%5C%28x%5C%29+on+one+side%3A**%0A+++%5C%5B%0A+++5x+-+2x+%3D+9+%2B+3%0A+++%5C%5D%0A%0A2.+**Simplify+both+sides%3A**%0A+++%5C%5B%0A+++3x+%3D+12%0A+++%5C%5D%0A%0A3.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"     
-[VisionTalk 2025-11-10T20:02:40.552Z] INFO: POLL GET /api/latest-photo {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
-[2025-11-10 12:03:13.861 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804949852_fng1wn5"
-    success: true
-    duration: 1000
-[2025-11-10 12:03:13.861 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    text: "**Solve for \(x\) by dividing both sides by 3:**\n   \[\n   x = \frac{12}{3} = 4\n   \]\n\nSo, the solution is \(x = 4\).\n\nThis exercise is a simple linear equation, useful for practicing algebra skills. Solving such equations helps develop problem-solving abilities and understanding of algebraic principles."
-    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=**Solve+for+%5C%28x%5C%29+by+dividing+both+sides+by+3%3A**%0A+++%5C%5B%0A+++x+%3D+%5Cfrac%7B12%7D%7B3%7D+%3D+4%0A+++%5C%5D%0A%0ASo%2C+the+solution+is+%5C%28x+%3D+4%5C%29.%0A%0AThis+exercise+is+a+simple+linear+equation%2C+useful+for+practicing+algebra+skills.+Solving+such+equations+helps+develop+problem-solving+abilities+and+understanding+of+algebraic+principles.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
-[2025-11-10 12:03:54.132 -0800] INFO: ≡ƒöè Audio play response received
-    app: "com.visiontalk.assistant"
-    packageName: "com.visiontalk.assistant"
-    service: "app-session"
-    userId: "izunlucky@gmail.com"
-    requestId: "audio_req_1762804993861_mjqfugx"
-    success: true
-    duration: 1000
-[VisionTalk 2025-11-10T20:04:06.602Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+# Latest photo metadata
+requestId: photo_req_1762805544251_bbtn7wg
+timestamp: 11/10/2025, 12:12:26 PM
+size: 222,424 bytes
+mime: image/jpeg
+sha256: 5a19a0e882de72a893b240a1dc14c3c239beca876430857266220bf7db076d7b
+
+# Chat/Analysis Log
+Sent to ElevenLabs TTS [12:12:44 PM]
+
+# Full Analysis
+No analysis yet.
+=====================

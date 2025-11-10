@@ -16,6 +16,7 @@ export const ENV = {
   PACKAGE_NAME: requireEnv('PACKAGE_NAME', 'com.visiontalk.assistant.dev'),
   MENTRAOS_API_KEY: requireEnv('MENTRAOS_API_KEY'),
   OPENAI_API_KEY: requireEnv('OPENAI_API_KEY'),
+  OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o',
   ELEVENLABS_API_KEY: requireEnv('ELEVENLABS_API_KEY'),
   PORT: parseInt(process.env.PORT || '3000', 10),
   PUBLIC_URL: process.env.PUBLIC_URL,

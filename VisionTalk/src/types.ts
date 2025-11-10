@@ -39,8 +39,15 @@ export interface UserState {
   // Full text of latest AI analysis (GPT-4V) for webview display
   latestAnalysis?: string;
   latestAnalysisAt?: number;
+  // Short answer extracted from analysis (for TTS and quick view)
+  latestAnswer?: string;
   // Map of photo requestId -> analysis text and timestamp
-  analysisByRequestId?: Record<string, { text: string; at: number }>;
+  analysisByRequestId?: Record<string, { text: string; answer?: string; at: number }>;
+}
+
+export interface AnalysisResult {
+  analysis: string;
+  answer?: string;
 }
 
 export type LogLevel = 'silent' | 'error' | 'warn' | 'info' | 'debug'

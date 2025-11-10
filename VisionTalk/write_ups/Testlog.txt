@@ -1,35 +1,465 @@
-PS V:\GitHub\MentraApp> Invoke-RestMethod http://127.0.0.1:3000/api/active-sessions
-count users
------ -----
-    1 {izunlucky@gmail.com}
+[2025-11-10 13:53:07.261 -0800] INFO: ≡ƒùú∩╕Å Received session request for user izunlucky@gmail.com, session izunlucky@gmail.com-com.visiontalk.assistant
 
 
-PS V:\GitHub\MentraApp> Invoke-RestMethod http://127.0.0.1:3000/api/capabilities
-
-summary                   users
--------                   -----
-@{users=1; withSpeaker=1} @{izunlucky@gmail.com=}
-
-
-PS V:\GitHub\MentraApp> Invoke-RestMethod 'http://127.0.0.1:3000/api/audio-test?volume=0.8'
-
-  ok userId
-  -- ------
-True izunlucky@gmail.com
-
-
-PS V:\GitHub\MentraApp> Invoke-RestMethod 'http://127.0.0.1:3000/api/audio-test?volume=0.8'
-
-  ok userId
-  -- ------
-True izunlucky@gmail.com
-
-
-PS V:\GitHub\MentraApp> Invoke-RestMethod -Method Post 'http://127.0.0.1:3000/api/stop-audio'
-
-  ok userId
-  -- ------
-True izunlucky@gmail.com
-
-
-PS V:\GitHub\MentraApp> 
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-server"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.262 -0800] DEBUG: ≡ƒÜÇ [com.visiontalk.assistant] App Session initialized
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.262 -0800] DEBUG: ≡ƒÜÇ [com.visiontalk.assistant] WebSocket URL: wss://uscentralapi.mentra.glass/app-ws
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.264 -0800] INFO: Not the system dashboard: com.visiontalk.assistant
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "SDK:DashboardManager"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.264 -0800] DEBUG: ≡ƒöä Audio module session ID updated
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    newSessionId: "izunlucky@gmail.com-com.visiontalk.assistant"
+[2025-11-10 13:53:07.265 -0800] INFO: ≡ƒöî≡ƒöî≡ƒöî [com.visiontalk.assistant] Attempting to connect to: wss://uscentralapi.mentra.glass/app-ws for session izunlucky@gmail.com-com.visiontalk.assistant
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[VisionTalk 2025-11-10T21:53:07.516Z] INFO: Session started for user izunlucky@gmail.com
+[VisionTalk 2025-11-10T21:53:07.516Z] INFO: Capabilities snapshot {"hasSpeaker":true,"hasMicrophone":true,"hasCamera":true,"hasDisplay":false,"modelName":"Mentra Live"}
+[2025-11-10 13:53:07.515 -0800] DEBUG: [AppSession] CONNECTION_ACK mentraosSettings}
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.515 -0800] WARN: [AppSession] CONNECTION_ACK message missing mentraosSettings field
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.515 -0800] INFO: [AppSession] Device capabilities loaded for model: Mentra Live
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+[2025-11-10 13:53:07.516 -0800] INFO: [AppSession] updateSubscriptions: sending subscriptions to cloud
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    subscriptions: "[]"
+[2025-11-10 13:53:07.516 -0800] INFO: [AppSession] updateSubscriptions: sending subscriptions to cloud
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    subscriptions: "[\"button_press\"]"
+Session token signature mismatch: f4c3928cf37c0c561063b658b5ccbd9c65f7f4a85774cb16742ebfb6cb0ae86d !== bf3e4b0fb4cfd4b772090e35e47e5e7750b7a867017fe8d3fbf521e5c55608cf
+[2025-11-10 13:53:09.659 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811587517_oso9bt9"
+    success: true
+    duration: 1000
+[VisionTalk 2025-11-10T21:53:16.022Z] INFO: Button press event received {"pressType":"short","captureOnly":false}
+[2025-11-10 13:53:16.023 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Stay still while I capture the image."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Stay+still+while+I+capture+the+image.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+DEBUG: requestPhoto options: { size: 'medium' }
+[2025-11-10 13:53:20.319 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811596023_f0jhsur"
+    success: true
+    duration: 1000
+[2025-11-10 13:53:20.696 -0800] INFO: ≡ƒô╕ Photo request sent
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811600696_d7hs15k"
+    hasCustomWebhook: false
+    hasAuthToken: false
+Received photo response:  [Object: null prototype] {
+  requestId: 'photo_req_1762811600696_d7hs15k',
+  type: 'photo_upload'
+}
+Session token signature mismatch: f4c3928cf37c0c561063b658b5ccbd9c65f7f4a85774cb16742ebfb6cb0ae86d !== bf3e4b0fb4cfd4b772090e35e47e5e7750b7a867017fe8d3fbf521e5c55608cf
+[2025-11-10 13:53:22.779 -0800] INFO: ≡ƒô╕ Received photo response: photo_req_1762811600696_d7hs15k (type: photo_upload)
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-server"
+    requestId: "photo_req_1762811600696_d7hs15k"
+    type: "photo_upload"
+[2025-11-10 13:53:22.780 -0800] INFO: ≡ƒô╕ Photo received for request photo_req_1762811600696_d7hs15k
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811600696_d7hs15k"
+[VisionTalk 2025-11-10T21:53:24.780Z] INFO: HTTP GET /api/photo-info/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:24.782Z] INFO: HTTP GET /api/photos {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:24.783Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:24.785Z] INFO: HTTP GET /api/photo/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"} 
+[VisionTalk 2025-11-10T21:53:24.793Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:53:24.694 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811602780_tj9ilx9"
+    success: true
+    duration: 1000
+[2025-11-10 13:53:24.795 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Analyzing what I see..."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Analyzing+what+I+see...&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[2025-11-10 13:53:27.891 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811604795_civducp"
+    success: true
+    duration: 1000
+[VisionTalk 2025-11-10T21:53:38.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:53:38.443 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Let's solve the two problems visible in the image. **First Problem: 6 plus 21 equals what?** **Problem:** Find the sum of six and twenty-one. **Assumptions:** We assume basic arithmetic rules. **Plan:** Add six and twenty-one directly. **Steps:** 1) Start with the number six. 2) Add twenty-one to it. 3) The result is twenty-seven. **Wrap-up:** So, six plus twenty-one equals twenty-seven."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Let%27s+solve+the+two+problems+visible+in+the+image.+**First+Problem%3A+6+plus+21+equals+what%3F**+**Problem%3A**+Find+the+sum+of+six+and+twenty-one.+**Assumptions%3A**+We+assume+basic+arithmetic+rules.+**Plan%3A**+Add+six+and+twenty-one+directly.+**Steps%3A**+1%29+Start+with+the+number+six.+2%29+Add+twenty-one+to+it.+3%29+The+result+is+twenty-seven.+**Wrap-up%3A**+So%2C+six+plus+twenty-one+equals+twenty-seven.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:53:41.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:44.817Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:47.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:50.828Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:53.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:56.821Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:53:59.819Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:02.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:05.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:08.806Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:54:08.822Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:11.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:14.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:17.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:21.099Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:23.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:26.814Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:29.819Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:54:30.712 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811618443_559o9u2"
+    success: true
+    duration: 1000
+[2025-11-10 13:54:30.712 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "--- **Second Problem: Solve for x in the equation 5x minus 3 equals 2x plus 9.** **Problem:** Solve the equation for x. **Assumptions:** We assume standard algebraic operations. **Plan:** Isolate x by moving terms with x to one side and constants to the other. **Steps:** 1) Start 
+with the equation: 5x minus 3 equals 2x plus 9. 2) Subtract 2x from both sides to get: 3x minus 3 equals 9. 3) Add 3 to both sides to get: 3x equals 12."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=---+**Second+Problem%3A+Solve+for+x+in+the+equation+5x+minus+3+equals+2x+plus+9.**+**Problem%3A**+Solve+the+equation+for+x.+**Assumptions%3A**+We+assume+standard+algebraic+operations.+**Plan%3A**+Isolate+x+by+moving+terms+with+x+to+one+side+and+constants+to+the+other.+**Steps%3A**+1%29+Start+with+the+equation%3A+5x+minus+3+equals+2x+plus+9.+2%29+Subtract+2x+from+both+sides+to+get%3A+3x+minus+3+equals+9.+3%29+Add+3+to+both+sides+to+get%3A+3x+equals+12.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:54:32.827Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:35.936Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:38.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:41.814Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:44.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:47.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:50.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:53.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:56.815Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:54:59.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:02.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:05.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:08.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:11.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:14.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:17.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:20.817Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:23.805Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:26.816Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:28.892Z] INFO: POLL GET /api/latest-photo {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:55:29.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:30.712Z] ERROR: TTS speak error on stage tts_chunk_2 {"error":"Audio play request timed out"}
+[VisionTalk 2025-11-10T21:55:30.712Z] ERROR: TTS chunk speak error {"chunk":2,"error":"Audio play request timed out"}
+[2025-11-10 13:55:30.712 -0800] WARN: ≡ƒöè Audio play request timed out
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811670712_srnlmx1"
+[2025-11-10 13:55:30.772 -0800] WARN: ≡ƒöè Received audio play response for unknown request ID
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811670712_srnlmx1"
+[VisionTalk 2025-11-10T21:55:32.823Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:35.816Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:38.800Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:55:38.820Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:41.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:44.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:47.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:55:50.792Z] INFO: Button press event received {"pressType":"short","captureOnly":false}
+[VisionTalk 2025-11-10T21:55:50.821Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:55:50.793 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Stay still while I capture the image."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Stay+still+while+I+capture+the+image.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:55:53.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:55:55.356 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811750793_lrfu3ze"
+    success: true
+    duration: 1000
+DEBUG: requestPhoto options: { size: 'medium' }
+[2025-11-10 13:55:55.711 -0800] INFO: ≡ƒô╕ Photo request sent
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811755711_6c9lqi4"
+    hasCustomWebhook: false
+    hasAuthToken: false
+[VisionTalk 2025-11-10T21:55:56.800Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:55:56.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+Received photo response:  [Object: null prototype] {
+  requestId: 'photo_req_1762811755711_6c9lqi4',
+  type: 'photo_upload'
+}
+Session token signature mismatch: f4c3928cf37c0c561063b658b5ccbd9c65f7f4a85774cb16742ebfb6cb0ae86d !== bf3e4b0fb4cfd4b772090e35e47e5e7750b7a867017fe8d3fbf521e5c55608cf
+[2025-11-10 13:55:58.388 -0800] INFO: ≡ƒô╕ Received photo response: photo_req_1762811755711_6c9lqi4 (type: photo_upload)
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-server"
+    requestId: "photo_req_1762811755711_6c9lqi4"
+    type: "photo_upload"
+[2025-11-10 13:55:58.388 -0800] INFO: ≡ƒô╕ Photo received for request photo_req_1762811755711_6c9lqi4
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811755711_6c9lqi4"
+[VisionTalk 2025-11-10T21:55:59.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811600696_d7hs15k {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:00.220Z] INFO: HTTP GET /api/photo-info/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:00.230Z] INFO: HTTP GET /api/photos {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:00.231Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:00.232Z] INFO: HTTP GET /api/photo/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"} 
+[VisionTalk 2025-11-10T21:56:00.246Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:00.544 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811758389_skl6p22"
+    success: true
+    duration: 1000
+[2025-11-10 13:56:00.660 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Analyzing what I see..."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Analyzing+what+I+see...&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:56:02.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:02.819Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:03.606 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811760660_0d1jpdp"
+    success: true
+    duration: 1000
+[VisionTalk 2025-11-10T21:56:05.803Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:56:05.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:05.820Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:07.143 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "The image is unclear, and I can't read the mathematical content. Could you please retake the photo, ensuring the text is clear and well-lit?"
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=The+image+is+unclear%2C+and+I+can%27t+read+the+mathematical+content.+Could+you+please+retake+the+photo%2C+ensuring+the+text+is+clear+and+well-lit%3F&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:56:08.815Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:11.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:14.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:17.799Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:56:17.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:20.464 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811767143_pz75eej"
+    success: true
+    duration: 1000
+[VisionTalk 2025-11-10T21:56:20.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:23.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:26.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:29.330Z] INFO: Button press event received {"pressType":"short","captureOnly":false}
+[VisionTalk 2025-11-10T21:56:29.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:29.331 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Stay still while I capture the image."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Stay+still+while+I+capture+the+image.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:56:32.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811755711_6c9lqi4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+DEBUG: requestPhoto options: { size: 'medium' }
+[2025-11-10 13:56:33.233 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811789331_d8gy2ry"
+    success: true
+    duration: 1000
+[2025-11-10 13:56:33.607 -0800] INFO: ≡ƒô╕ Photo request sent
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811793607_ppq9in4"
+    hasCustomWebhook: false
+    hasAuthToken: false
+Received photo response:  [Object: null prototype] {
+  requestId: 'photo_req_1762811793607_ppq9in4',
+  type: 'photo_upload'
+}
+Session token signature mismatch: f4c3928cf37c0c561063b658b5ccbd9c65f7f4a85774cb16742ebfb6cb0ae86d !== bf3e4b0fb4cfd4b772090e35e47e5e7750b7a867017fe8d3fbf521e5c55608cf
+[2025-11-10 13:56:35.098 -0800] INFO: ≡ƒô╕ Received photo response: photo_req_1762811793607_ppq9in4 (type: photo_upload)
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-server"
+    requestId: "photo_req_1762811793607_ppq9in4"
+    type: "photo_upload"
+[2025-11-10 13:56:35.098 -0800] INFO: ≡ƒô╕ Photo received for request photo_req_1762811793607_ppq9in4
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "photo_req_1762811793607_ppq9in4"
+[VisionTalk 2025-11-10T21:56:35.202Z] INFO: HTTP GET /api/photo-info/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:35.203Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:35.204Z] INFO: HTTP GET /api/photo/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"} 
+[VisionTalk 2025-11-10T21:56:35.205Z] INFO: HTTP GET /api/photos {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:35.212Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:35.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:35.820Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:36.919 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811795098_xqdard9"
+    success: true
+    duration: 1000
+[2025-11-10 13:56:37.028 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "Analyzing what I see..."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=Analyzing+what+I+see...&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:56:38.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:38.819Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:39.966 -0800] INFO: ≡ƒöè Audio play response received
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811797028_qsp66mn"
+    success: true
+    duration: 1000
+[VisionTalk 2025-11-10T21:56:41.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:41.817Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:44.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:44.815Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:47.821Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:47.831Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:50.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:50.816Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:53.809Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:53.818Z] INFO: HTTP GET /api/analysis/latest {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[2025-11-10 13:56:53.907 -0800] INFO: ≡ƒùú∩╕Å Generating speech from text
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    text: "The problem is about a graph \( G \) with certain nodes and edges. We need to find numeric answers for four questions related to the graph. 1. **Problem Statement**: We have a graph \( G \) defined by specific conditions on nodes and edges. We need to fill in the blanks for the number of nodes, edges, and the size of vertex covers. 2. **Assumptions and Target**: The graph \( G \) has nodes defined by integers \( n \) from zero to nine."
+    ttsUrl: "https://uscentralapi.mentra.glass/api/tts?text=The+problem+is+about+a+graph+%5C%28+G+%5C%29+with+certain+nodes+and+edges.+We+need+to+find+numeric+answers+for+four+questions+related+to+the+graph.+1.+**Problem+Statement**%3A+We+have+a+graph+%5C%28+G+%5C%29+defined+by+specific+conditions+on+nodes+and+edges.+We+need+to+fill+in+the+blanks+for+the+number+of+nodes%2C+edges%2C+and+the+size+of+vertex+covers.+2.+**Assumptions+and+Target**%3A+The+graph+%5C%28+G+%5C%29+has+nodes+defined+by+integers+%5C%28+n+%5C%29+from+zero+to+nine.&voice_id=aYIHaVW2uuV2iGj07rJH&model_id=eleven_flash_v2_5&voice_settings=%7B%22stability%22%3A0.5%2C%22similarity_boost%22%3A0.8%2C%22style%22%3A0.4%2C%22speed%22%3A0.8%7D"
+[VisionTalk 2025-11-10T21:56:56.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:56:59.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:02.811Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:05.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:08.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:11.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:14.831Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:17.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:20.816Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:23.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:26.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:29.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:32.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:35.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:38.817Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:41.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:44.808Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:47.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:50.819Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:53.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:53.919Z] ERROR: TTS speak error on stage tts_chunk_1 {"error":"Audio play request timed out"}
+[VisionTalk 2025-11-10T21:57:53.919Z] ERROR: TTS chunk speak error {"chunk":1,"error":"Audio play request timed out"}
+[2025-11-10 13:57:53.919 -0800] WARN: ≡ƒöè Audio play request timed out
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811813908_qq50f0d"
+[2025-11-10 13:57:54.975 -0800] WARN: ≡ƒöè Received audio play response for unknown request ID
+    app: "com.visiontalk.assistant"
+    packageName: "com.visiontalk.assistant"
+    service: "app-session"
+    userId: "izunlucky@gmail.com"
+    requestId: "audio_req_1762811813908_qq50f0d"
+[VisionTalk 2025-11-10T21:57:56.820Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:57:59.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:58:02.806Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:58:05.807Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:58:08.810Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:58:11.801Z] INFO: POLL GET /api/events {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:58:11.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 2025-11-10T21:58:12.801Z] INFO: POLL GET /api/latest-photo {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5"}
+[VisionTalk 2025-11-10T21:58:14.812Z] INFO: HTTP GET /api/analysis/by-request/photo_req_1762811793607_ppq9in4 {"host":"elva-nonlaying-tamar.ngrok-free.dev","from":"2607:f6d0:d:3555::a5","ua":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"}
+[VisionTalk 202

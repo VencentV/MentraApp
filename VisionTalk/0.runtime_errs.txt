@@ -1,0 +1,368 @@
+Cannot find module './log' or its corresponding type declarations.
+"mentra": Unknown word.
+"MENTRAOS": Unknown word.
+"MENTRAOS": Unknown word.
+"ELEVENLABS": Unknown word.
+"ELEVENLABS": Unknown word.
+"Mentra": Unknown word.
+"MENTRAOS": Unknown word.
+"elevenlabs": Unknown word.
+"Mentra": Unknown word.
+"Mentra": Unknown word.
+"Mentra": Unknown word.
+"mentra": Unknown word.
+"Mentra": Unknown word.
+"MENTRAOS": Unknown word.
+"MENTRAOS": Unknown word.
+"ELEVENLABS": Unknown word.
+"ELEVENLABS": Unknown word.
+"Mentra": Unknown word.
+"Mentra": Unknown word.
+"MENTRAOS": Unknown word.
+"MENTRAOS": Unknown word.
+"ELEVENLABS": Unknown word.
+"ELEVENLABS": Unknown word.
+Cannot find module '../log' or its corresponding type declarations.
+"mentra": Unknown word.
+Cannot find module '../log' or its corresponding type declarations.
+"mentra": Unknown word.
+Cannot find module '../log' or its corresponding type declarations.
+"mentra": Unknown word.
+
+===========================================
+
+[{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module './log' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 9,
+	"startColumn": 34,
+	"endLineNumber": 9,
+	"endColumn": 41,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 1,
+	"startColumn": 52,
+	"endLineNumber": 1,
+	"endColumn": 58,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 28,
+	"startColumn": 7,
+	"endLineNumber": 28,
+	"endColumn": 15,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 28,
+	"startColumn": 30,
+	"endLineNumber": 28,
+	"endColumn": 38,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 30,
+	"startColumn": 7,
+	"endLineNumber": 30,
+	"endColumn": 17,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 30,
+	"startColumn": 32,
+	"endLineNumber": 30,
+	"endColumn": 42,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 41,
+	"startColumn": 17,
+	"endLineNumber": 41,
+	"endColumn": 23,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 73,
+	"startColumn": 48,
+	"endLineNumber": 73,
+	"endColumn": 56,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"elevenlabs\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 202,
+	"startColumn": 35,
+	"endLineNumber": 202,
+	"endColumn": 45,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 277,
+	"startColumn": 34,
+	"endLineNumber": 277,
+	"endColumn": 40,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 279,
+	"startColumn": 60,
+	"endLineNumber": 279,
+	"endColumn": 66,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 337,
+	"startColumn": 8,
+	"endLineNumber": 337,
+	"endColumn": 14,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 341,
+	"startColumn": 42,
+	"endLineNumber": 341,
+	"endColumn": 48,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 345,
+	"startColumn": 48,
+	"endLineNumber": 345,
+	"endColumn": 54,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 539,
+	"startColumn": 9,
+	"endLineNumber": 539,
+	"endColumn": 17,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 539,
+	"startColumn": 27,
+	"endLineNumber": 539,
+	"endColumn": 35,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 541,
+	"startColumn": 9,
+	"endLineNumber": 541,
+	"endColumn": 19,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 541,
+	"startColumn": 29,
+	"endLineNumber": 541,
+	"endColumn": 39,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 616,
+	"startColumn": 27,
+	"endLineNumber": 616,
+	"endColumn": 33,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"Mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 623,
+	"startColumn": 93,
+	"endLineNumber": 623,
+	"endColumn": 99,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 627,
+	"startColumn": 5,
+	"endLineNumber": 627,
+	"endColumn": 13,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"MENTRAOS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 627,
+	"startColumn": 23,
+	"endLineNumber": 627,
+	"endColumn": 31,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 629,
+	"startColumn": 5,
+	"endLineNumber": 629,
+	"endColumn": 15,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/index.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"ELEVENLABS\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 629,
+	"startColumn": 25,
+	"endLineNumber": 629,
+	"endColumn": 35,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/camera.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../log' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 2,
+	"startColumn": 23,
+	"endLineNumber": 2,
+	"endColumn": 31,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/camera.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 1,
+	"startColumn": 46,
+	"endLineNumber": 1,
+	"endColumn": 52,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/openai.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../log' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 2,
+	"startColumn": 23,
+	"endLineNumber": 2,
+	"endColumn": 31,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/openai.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 1,
+	"startColumn": 34,
+	"endLineNumber": 1,
+	"endColumn": 40,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/tts.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../log' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 2,
+	"startColumn": 23,
+	"endLineNumber": 2,
+	"endColumn": 31,
+	"origin": "extHost1"
+},{
+	"resource": "/v:/GitHub/MentraApp/VisionTalk/src/services/tts.ts",
+	"owner": "cSpell",
+	"severity": 2,
+	"message": "\"mentra\": Unknown word.",
+	"source": "cSpell",
+	"startLineNumber": 1,
+	"startColumn": 35,
+	"endLineNumber": 1,
+	"endColumn": 41,
+	"origin": "extHost1"
+}]

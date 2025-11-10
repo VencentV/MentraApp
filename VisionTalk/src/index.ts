@@ -196,17 +196,21 @@ class VisionTalkMentraApp extends AppServer {
     await this.withAudioQueue(userId, () => speakWithEvent(session, "Analyzing what I see...", voiceConfig, this.recordEvent.bind(this), state, 'tts_analyzing'))
 
   // 5. Analyze with GPT-4V (service)
-  const analysis = await analyzeImageService(photo, this.recordEvent.bind(this));
-  // Persist full analysis for webview retrieval (latest and per-photo)
+  const result = await analyzeImageService(photo, this.recordEvent.bind(this));
+  const analysis = result.analysis;
+  const answer = result.answer;
+  // Persist full analysis and short answer for webview retrieval (latest and per-photo)
   state.latestAnalysis = analysis;
+  state.latestAnswer = answer;
   state.latestAnalysisAt = Date.now();
   if (!state.analysisByRequestId) state.analysisByRequestId = {};
-  state.analysisByRequestId[photo.requestId] = { text: analysis, at: state.latestAnalysisAt };
+  state.analysisByRequestId[photo.requestId] = { text: analysis, answer, at: state.latestAnalysisAt };
 
     // 6. Send to ElevenLabs (TTS)
-  this.recordEvent('tts_sent_to_elevenlabs', { textExcerpt: analysis.substring(0, 160), length: analysis.length, requestId: photo.requestId });
-  // Play TTS in manageable chunks to avoid long-request timeouts
-    await this.withAudioQueue(userId, () => playTTSInChunks(session, analysis, voiceConfig, this.recordEvent.bind(this), state))
+    const ttsText = (answer && answer.length < 600) ? answer : analysis;
+    this.recordEvent('tts_sent_to_elevenlabs', { textExcerpt: ttsText.substring(0, 160), length: ttsText.length, requestId: photo.requestId, usedAnswer: !!answer });
+    // Play TTS in manageable chunks to avoid long-request timeouts
+    await this.withAudioQueue(userId, () => playTTSInChunks(session, ttsText, voiceConfig, this.recordEvent.bind(this), state))
     this.recordEvent('tts_played');
     this.recordEvent('pipeline_complete');
   }
@@ -581,12 +585,14 @@ class VisionTalkMentraApp extends AppServer {
     app.get('/api/analysis/latest', (req: any, res: any) => {
       const queryUser = (req.query.userId as string) || null;
       let latest: { userId: string; analysis: string; at: number } | null = null;
+      let latestAnswer: string | undefined;
       const users = queryUser ? [queryUser] : Array.from(this.userState.keys());
       for (const uid of users) {
         const st = this.userState.get(uid);
         if (!st?.latestAnalysis) continue;
         if (!latest || (st.latestAnalysisAt || 0) > latest.at) {
           latest = { userId: uid, analysis: st.latestAnalysis, at: st.latestAnalysisAt || 0 };
+          latestAnswer = st.latestAnswer;
         }
       }
       if (!latest) return res.status(404).json({ error: 'No analysis available' });
@@ -595,6 +601,7 @@ class VisionTalkMentraApp extends AppServer {
         analysis: latest.analysis,
         timestamp: latest.at,
         length: latest.analysis.length,
+        answer: latestAnswer,
       });
     });
 
@@ -605,7 +612,7 @@ class VisionTalkMentraApp extends AppServer {
         const map = st.analysisByRequestId || {};
         const entry = map[requestId];
         if (entry) {
-          return res.json({ userId: uid, analysis: entry.text, timestamp: entry.at, length: entry.text.length, requestId });
+          return res.json({ userId: uid, analysis: entry.text, answer: entry.answer, timestamp: entry.at, length: entry.text.length, requestId });
         }
       }
       return res.status(404).json({ error: 'No analysis for requestId' });

@@ -198,7 +198,8 @@
     <div class="panel" style="margin-top:18px;">
       <h3>Full Analysis</h3>
       <div id="fullAnalysis" style="min-height:60px;"></div>
-      <div id="analysisMeta" style="margin-top:6px;font-size:11px;opacity:0.65"></div>
+  <div id="analysisMeta" style="margin-top:6px;font-size:11px;opacity:0.65"></div>
+  <div id="shortAnswer" style="margin-top:10px;font-size:13px;font-weight:600;color:#fff;opacity:0.95"></div>
     </div>
   </div>
 
@@ -445,6 +446,7 @@
           if (resp.status === 404) {
             document.getElementById('fullAnalysis').textContent = 'No analysis yet.';
             document.getElementById('analysisMeta').textContent = '';
+            document.getElementById('shortAnswer').textContent = '';
           }
           return;
         }
@@ -454,6 +456,8 @@
         const meta = document.getElementById('analysisMeta');
         const timeStr = new Date(data.timestamp).toLocaleTimeString();
         meta.textContent = `User: ${data.userId} | Length: ${data.length} chars | ${timeStr}`;
+        const shortEl = document.getElementById('shortAnswer');
+        shortEl.textContent = data.answer ? `ANSWER: ${data.answer}` : '';
       } catch (err) {
         // Silent fail
       }
@@ -468,6 +472,8 @@
           const meta = document.getElementById('analysisMeta');
           const timeStr = new Date(data.timestamp).toLocaleTimeString();
           meta.textContent = `User: ${data.userId} | Length: ${data.length} chars | ${timeStr} | Photo: ${data.requestId}`;
+          const shortEl = document.getElementById('shortAnswer');
+          shortEl.textContent = data.answer ? `ANSWER: ${data.answer}` : '';
           return;
         }
         // Fallback to latest if not found
