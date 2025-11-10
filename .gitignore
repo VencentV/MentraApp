@@ -8,7 +8,7 @@ dist/
 build/
 package-lock.json
 MentraOS-cloud-functions/
-AceSense/
+#AceSense/
 VisionTalk_backup_v1/
-0_Mentra_Documenation/
-example_projects/
+#0_Mentra_Documenation/
+#example_projects/

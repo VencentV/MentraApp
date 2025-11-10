@@ -9,7 +9,7 @@ import { ENV, getServerUrl } from './config'
 import { vtLog, shouldLog } from './log'
 import { Message, StoredPhoto, UserState, VoiceConfig } from './types'
 import { speakWithEvent, playTTSInChunks } from './services/tts'
-import { requestPhotoWithTimeout } from './services/camera'
+import { requestPhotoRobust } from './services/camera'
 import { cachePhoto, getLatestPhoto } from './services/photos'
 import { analyzeImageWithGPT4V as analyzeImageService } from './services/openai'
 
@@ -76,81 +76,57 @@ class VisionTalkMentraApp extends AppServer {
     sessionId: string,
     userId: string
   ): Promise<void> {
-  this.shuttingDown = false;
-  this._vtActiveSessions = Math.max(0, this._vtActiveSessions + 1);
-    // Force demo user for now
-    userId = VisionTalkMentraApp.DEMO_USER_ID;
-  vtLog('info', `Session started for user ${userId}`);
-
-    if (CAPTURE_ONLY) vtLog('info', 'CAPTURE_ONLY mode enabled – skipping TTS and OpenAI.');
-
-    // Voice configuration for natural, clear speech
-    const voiceConfig = {
-      voice_id: "aYIHaVW2uuV2iGj07rJH", // John voice
-      model_id: "eleven_flash_v2_5",
-      voice_settings: {
-        stability: 0.5,
-        similarity_boost: 0.8,
-        style: 0.4,
-        speed: 0.8,
-      },
-    };
-
-    // Welcome the user
-    // Register button handler first
-    session.events.onButtonPress(async ({ pressType }) => {
-      vtLog('info', `Button press event received`, { pressType, captureOnly: CAPTURE_ONLY });
-      if (pressType !== "short") return;
-      if (this.isProcessing) {
-        vtLog('warn', 'Ignored press: pipeline is already processing');
-        return;
+    vtLog('info', `Session started for user ${userId}`)
+    
+    const state = this.ensureUserState(userId)
+    
+    // Subscribe to button press ONCE
+    const offButton = session.events.onButtonPress(async ({ pressType }) => {
+      vtLog('info', 'Button press event received', { pressType, captureOnly: CAPTURE_ONLY })
+      
+      if (pressType !== 'short') return
+      if (state.isProcessing) {
+        vtLog('warn', 'Capture already in progress, ignoring button press')
+        return
       }
-      this.isProcessing = true;
+      
+      state.isProcessing = true
       try {
         if (CAPTURE_ONLY) {
-          const state = this.ensureUserState(userId);
-          await this.handleCaptureOnly(session, userId, state);
+          await this.handleCaptureOnly(session, userId, state)
         } else {
-          const state = this.ensureUserState(userId);
-          await this.handlePhotoAndAnalysis(session, voiceConfig, userId, state);
+          await this.handlePhotoAndAnalysis(session, userId, state)
         }
-      } catch (error) {
-        vtLog('error', `Pipeline error`, { error: String(error) });
+      } catch (err: any) {
+        vtLog('error', 'Pipeline error', { error: String(err) })
+        await speakWithEvent(session, 'Sorry, something went wrong.', this.recordEvent.bind(this))
       } finally {
-        this.isProcessing = false;
+        state.isProcessing = false
       }
-    });
+    })
 
-    // Now play TTS welcome message asynchronously (guarded to avoid duplicate playback)
-    if (!CAPTURE_ONLY && !this.welcomePlayed) {
-      this.welcomePlayed = true;
-      this.recordEvent('welcome_tts_start');
-      vtLog('debug', 'Starting TTS welcome message');
-      // Debounce any subsequent TTS for a brief window to prevent double playback on reconnects
-      this.startupSpeakDebounceUntil = Date.now() + 1500;
-      session.audio.speak("VisionTalk ready.", voiceConfig)
-        .then(async () => {
-          this.recordEvent('welcome_tts_done');
-          vtLog('debug', 'TTS welcome message finished');
-          if (STARTUP_CHIME) {
-            try {
-              this.recordEvent('welcome_chime_play');
-              await session.audio.playAudio({
-                audioUrl: getServerUrl() + "/assets/chime-sound.mp3",
-                volume: 0.55,
-              });
-              this.recordEvent('welcome_chime_done');
-            } catch (err: any) {
-              this.recordEvent('welcome_chime_error', {}, err?.message);
-              vtLog('warn', 'Startup chime error', { error: String(err) });
-            }
-          }
-        })
-        .catch((err) => {
-          this.recordEvent('welcome_tts_error', {}, String(err));
-          vtLog('warn', 'TTS welcome message error', { error: String(err) });
-        });
+    // CRITICAL FIX: Only play welcome ONCE
+    // Check if already played AND if debounce window has passed
+    const now = Date.now()
+    if (!state.welcomePlayed && (!state.startupDebounceUntil || now >= state.startupDebounceUntil)) {
+      state.welcomePlayed = true
+      state.startupDebounceUntil = now + AUDIO_DUPLICATE_SUPPRESS_MS
+
+      // Play chime OR welcome TTS, not both
+      if (STARTUP_CHIME) {
+        const chimeUrl = `${getServerUrl()}/assets/chime-sound.mp3`
+        try {
+          await session.audio.playAudio({ audioUrl: chimeUrl, volume: 0.6 })
+        } catch (e) {
+          vtLog('warn', 'Chime playback failed', { error: String(e) })
+        }
+      } else {
+        // Only speak if no chime
+        await speakWithEvent(session, 'VisionTalk ready.', this.recordEvent.bind(this))
+      }
     }
+
+    this.addCleanupHandler(offButton)
   }
 
   protected async onStop(
@@ -159,61 +135,71 @@ class VisionTalkMentraApp extends AppServer {
     reason: string
   ): Promise<void> {
     this.shuttingDown = true;
-    userId = VisionTalkMentraApp.DEMO_USER_ID;
     vtLog('info', `Session stopped for user ${userId}`, { reason });
     this.isProcessing = false;
   this._vtActiveSessions = Math.max(0, this._vtActiveSessions - 1);
   }
 
   /* ──────────────────────────── Core Analysis Flow ───────────────────────────── */
-  private async handlePhotoAndAnalysis(session: AppSession, voiceConfig: VoiceConfig, userId: string, state: UserState) {
+  // FIXED signature: (session, userId, state)
+  private async handlePhotoAndAnalysis(session: AppSession, userId: string, state: UserState) {
     this.recordEvent('capture_init');
-    // 1. Instruct user to stay still
-    await speakWithEvent(session, "Stay still while I capture the image.", voiceConfig, this.recordEvent.bind(this), state, 'tts_capture_prompt');
 
-    // 2. Take photo
-    this.recordEvent('photo_request');
-    const photo = await requestPhotoWithTimeout(session, 20000, this.recordEvent.bind(this));
-    this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
-    vtLog('debug', `Photo captured`, { ts: photo.timestamp.toISOString(), req: photo.requestId, size: photo.size });
-  cachePhoto(photo, userId, state);
+    // 1) TTS prompt
+    await speakWithEvent(session, "Stay still while I capture the image.", undefined, this.recordEvent.bind(this), state, 'tts_capture_prompt');
 
-    // 3. Play confirmation sound
-    this.recordEvent('chime_play');
-    await session.audio.playAudio({ audioUrl: getServerUrl() + "/assets/chime-sound.mp3", volume: 0.6 });
-    this.recordEvent('chime_done');
+    // 2) Short delay + capability check + photo
+    await sleep(250)
+    this.recordEvent('photo_request')
+    if (!session.capabilities?.hasCamera) {
+      await speakWithEvent(session, 'Camera not available on this device.', undefined, this.recordEvent.bind(this), state, 'tts_no_camera')
+      return
+    }
+    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750 })
+    this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType })
+    vtLog('debug', `Photo captured`, { ts: (photo.timestamp || new Date()).toISOString(), req: photo.requestId, size: photo.size })
+    cachePhoto(photo as any, userId, state)
 
-    // 4. Let user know we're processing
-  await speakWithEvent(session, "Analyzing what I see...", voiceConfig, this.recordEvent.bind(this), state, 'tts_analyzing');
+    // 3) Chime
+    this.recordEvent('chime_play')
+    await session.audio.playAudio({ audioUrl: getServerUrl() + "/assets/chime-sound.mp3", volume: 0.6 })
+    this.recordEvent('chime_done')
 
-  // 5. Analyze with GPT-4V (service)
-  const analysis = await analyzeImageService(photo, this.recordEvent.bind(this));
+    // 4) Analyzing TTS
+    await speakWithEvent(session, "Analyzing what I see...", undefined, this.recordEvent.bind(this), state, 'tts_analyzing')
 
-    // 6. Send to ElevenLabs (TTS)
-    this.recordEvent('tts_sent_to_elevenlabs', { textExcerpt: analysis.substring(0, 120) });
-  // Play TTS in manageable chunks to avoid long-request timeouts
-  await playTTSInChunks(session, analysis, voiceConfig, this.recordEvent.bind(this), state);
-    this.recordEvent('tts_played');
-    this.recordEvent('pipeline_complete');
+    // 5) Vision analysis (can be no-op until API wired)
+    const analysis = await analyzeImageService(photo as any, this.recordEvent.bind(this))
+
+    // 6) TTS chunks
+    this.recordEvent('tts_sent_to_elevenlabs', { textExcerpt: (analysis || '').substring(0, 120) })
+    await playTTSInChunks(session, analysis || 'I took a picture.', undefined, this.recordEvent.bind(this), state, 'tts')
+    this.recordEvent('tts_played')
+    this.recordEvent('pipeline_complete')
   }
 
   // Capture-only flow: take photo, cache it, optional chime, no AI, no TTS
   private async handleCaptureOnly(session: AppSession, userId: string, state: UserState) {
-    this.recordEvent('capture_only_init');
-    // Take photo directly without pre-TTS
-    this.recordEvent('photo_request');
-    const photo = await requestPhotoWithTimeout(session, 20000, this.recordEvent.bind(this));
-    this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
-  cachePhoto(photo, userId, state);
-    // Soft confirmation chime
-    try {
-      this.recordEvent('chime_play');
-      await session.audio.playAudio({ audioUrl: getServerUrl() + "/assets/chime-sound.mp3", volume: 0.6 });
-      this.recordEvent('chime_done');
-    } catch (err) {
-      this.recordEvent('chime_error', {}, (err as Error)?.message);
+    this.recordEvent('capture_only_init')
+    await sleep(150)
+    this.recordEvent('photo_request')
+
+    if (!session.capabilities?.hasCamera) {
+      await speakWithEvent(session, 'Camera not available on this device.', undefined, this.recordEvent.bind(this), state, 'tts_no_camera')
+      return
     }
-    this.recordEvent('capture_only_complete');
+    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750 })
+    this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType })
+    cachePhoto(photo as any, userId, state)
+
+    try {
+      this.recordEvent('chime_play')
+      await session.audio.playAudio({ audioUrl: getServerUrl() + "/assets/chime-sound.mp3", volume: 0.6 })
+      this.recordEvent('chime_done')
+    } catch (err) {
+      this.recordEvent('chime_error', {}, (err as Error)?.message)
+    }
+    this.recordEvent('capture_only_complete')
   }
 
   /* GPT-4V analysis moved to services/openai.ts */
@@ -434,8 +420,13 @@ class VisionTalkMentraApp extends AppServer {
     if (this.events.length > this.MAX_EVENTS) this.events.shift();
   }
 
-  // TTS & camera helper methods migrated to services/*.ts
+  // tiny sleep helper (module scope below)
+  }
+
+function sleep(ms: number) {
+  return new Promise<void>(res => setTimeout(res, ms))
 }
+
 
 /* ──────────────────────────────── Boot ──────────────────────────────────── */
 const app = new VisionTalkMentraApp();
