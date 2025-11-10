@@ -1,0 +1,93 @@
+## Audio Pipeline / AudioManager Review (VisionTalk Integration)
+
+Problem Areas Observed:
+- Duplicate playback (same TTS heard twice) caused by double invocation or retry without guard.
+- Long multi-part analysis leads to timeouts (no proactive chunk prefetch or queue management).
+- End-of-session "audio whiplash" (queued speaks flushed during shutdown).
+- Chime reliability poor when using remote URLs (latency + occasional fetch issues).
+- No centralized cancellation/abort model (shutdown, new request, or user interrupt).
+- Lack of structured telemetry for per-request latency (TTS gen vs playback).
+- No adaptive fallback (e.g. if TTS fails twice, switch to minimal short summary voice).
+- Sequential blocking pattern—each speak awaited fully before next generation begins.
+- No volume normalization or per-device capability adaptation.
+- No jitter/duplicate suppression window (startup + reconnect race).
+- Missing unified queue: playAudio and speak handled separately without global arbitration.
+- No progressive streaming (chunked TTS arrival while previous chunk plays).
+- No configurable max length guard (prevent very long inputs from flooding queue).
+- Error logging not enriched with context (voice_id, model_id, length, network duration).
+- No exponential backoff or graceful degrade (switch model if high latency).
+- Potential race: rapid button presses while previous TTS still establishing.
+
+Recommended Enhancements:
+
+1. Unified Audio Queue:
+   - Implement single FIFO queue for both speak() and playAudio().
+   - Queue items: { kind: 'tts' | 'url', text?, url?, meta, abortSignal }.
+   - Dispatch loop handles cancellation, debounce, and device busy state.
+   
+2. Debounce & Duplicate Guard:
+   - Maintain lastTTSHash + timestamp; ignore repeats within 1200ms.
+   - Startup debounce window (e.g. 1500ms) to suppress connection echo/replay.
+
+3. Parallel Prefetch for Chunked TTS:
+   - Generate all chunks concurrently (Promise.all) or in limited parallel with sliding window size = 2.
+   - Begin playback of chunk 0 while chunk 1 is finalizing.
+   - Abort prefetch on session stop.
+
+4. Adaptive Timeout / Fallback:
+   - Track rolling avg generation latency; if exceeds threshold (e.g. >4s), switch model to flash_v2_5.
+   - If playback request times out → retry once with lower bitrate / shorter paraphrased text.
+
+5. Abort Handling:
+   - onStop sets shuttingDown flag and calls session.audio.stopAudio().
+   - Each queue item checks shuttingDown before dispatch; marks event tts_skipped_shutdown.
+
+6. Latency Telemetry:
+   - Capture: generation_start_ts, generation_end_ts, playback_start_ts, playback_end_ts.
+   - Emit summarized event audio_metrics with durations and model_id.
+
+7. Max Length Guard:
+   - Before sending to TTS: truncate or summarize if > N chars (configurable via env e.g. MAX_TTS_CHARS=800).
+
+8. Resilient Chime:
+   - Serve locally from /assets with caching headers.
+   - Preload during session init (HEAD or quick fetch) to warm path.
+
+9. Volume / Capability Adaptation:
+   - If !session.capabilities?.hasSpeaker → reduce verbosity, shorter phrases.
+   - Adjust volume default: private speaker vs open.
+
+10. Retry Strategy:
+    - For transient network errors: up to 2 retries with incremental backoff (500ms, 1500ms).
+    - If speak fails → fallback to simplified text "Analysis ready."
+
+11. Streaming / Progressive API (Future):
+    - If SDK/ElevenLabs supports streaming bytes → implement early playback for first audio segment before full synthesis completes.
+
+12. Consolidated Diagnostics Endpoint:
+    - /api/audio-status returns queue length, active item, last error, avg latencies.
+
+13. Guard Against Overlapping Play:
+    - Before enqueue: if queue has >0 tts items and new is analysis continuation, merge if under size threshold.
+
+Action Plan (Incremental):
+- Phase 1: Implement unified queue + duplicate guard + shutdown abort.
+- Phase 2: Add telemetry + adaptive timeout + local chime preload.
+- Phase 3: Parallel prefetch for chunked TTS + diagnostics endpoint.
+- Phase 4: Fallback / summarizer + retry/backoff.
+- Phase 5: Optional streaming integration if API allows.
+
+Env Variables Proposed:
+- AUDIO_STARTUP_DEBOUNCE_MS=1500
+- AUDIO_TIMEOUT_MS=30000
+- MAX_TTS_CHARS=800
+- TTS_MODEL_PRIMARY=eleven_flash_v2_5
+- TTS_MODEL_FALLBACK=eleven_turbo_v2_5
+- AUDIO_QUEUE_MAX=10
+
+Next Steps Implementing Phase 1:
+- Introduce AudioQueue class in src/audio/queue.ts.
+- Replace direct session.audio.speak/playAudio calls with enqueueAudio().
+- Add event emission: audio_queue_enqueue, audio_queue_dequeue, audio_queue_abort.
+
+End of Entry.

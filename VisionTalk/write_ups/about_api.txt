@@ -1,0 +1,174 @@
+# VisionTalk API Usage Breakdown
+
+## Overview
+VisionTalk uses two external APIs to transform visual input into spoken explanations:
+
+1. **OpenAI GPT-4V (gpt-4o)** – For visual analysis and reasoning
+2. **ElevenLabs (John voice)** – For natural voice synthesis
+
+## OpenAI GPT-4V API Usage
+
+### What We Send
+```json
+{
+  "model": "gpt-4o",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are VisionTalk, an AI assistant that helps people understand what they're looking at through smart glasses. If the image contains math, provide a step-by-step proof or solution."
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "What do you see in this image? Please analyze it and explain what's happening."
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "data:image/jpeg;base64,<BASE64_ENCODED_IMAGE>"
+          }
+        }
+      ]
+    }
+  ],
+  "max_tokens": 600,
+  "temperature": 0.7
+}
+```
+
+### Image Processing
+- **Input**: Raw photo buffer from Mentra glasses camera
+- **Format**: JPEG/PNG image data (typically 1-5MB)
+- **Encoding**: Converted to base64 string with MIME type prefix
+- **Delivery**: Embedded directly in API request as data URI
+
+### Response Processing
+```json
+{
+  "choices": [
+    {
+      "message": {
+        "content": "This appears to be a math worksheet showing quadratic equations. I can see the problem asks you to solve for x using the quadratic formula. Here's how to approach this step by step..."
+      }
+    }
+  ]
+}
+```
+
+### What We Get Back
+- **Content**: Educational explanation text (30-90 seconds speaking time)
+- **Style**: Conversational, informative, context-aware
+- **Focus**: Goes beyond description to provide learning value, including math proofs if relevant
+- **Length**: Up to 600 tokens (~400-500 words) for audio delivery
+
+## ElevenLabs API Usage
+
+### What We Send
+VisionTalk uses the MentraOS SDK's built-in audio system, which handles ElevenLabs integration internally.
+
+### Voice Configuration
+```typescript
+const voiceConfig = {
+  voice_id: "aYIHaVW2uuV2iGj07rJH", // John voice
+  model_id: "eleven_flash_v2_5",     // Fast, high-quality model
+  voice_settings: {
+    stability: 0.5,        // Voice consistency (0-1)
+    similarity_boost: 0.8, // Voice accuracy (0-1)
+    style: 0.4,            // Speaking style variation (0-1)
+    speed: 0.8,            // Speaking speed (0.25-4.0)
+  }
+}
+```
+
+### Text-to-Speech Process
+1. **Input**: GPT-4V analysis text + voice configuration
+2. **Processing**: MentraOS SDK calls ElevenLabs API internally
+3. **Output**: Audio stream delivered directly to glasses speakers
+4. **Quality**: Natural, clear tone with John voice characteristics
+
+### Audio Delivery Types
+1. **Pre-capture prompt**: "Stay still while I capture the image."
+2. **Processing notification**: "Analyzing what I see..."  
+3. **Main analysis**: Full GPT-4V explanation (30-60 seconds)
+
+## API Cost & Performance Considerations
+
+### OpenAI GPT-4V (gpt-4o)
+- **Cost**: ~$0.01-0.03 per image analysis (varies by image size)
+- **Latency**: 2-4 seconds typical response time
+- **Rate Limits**: Subject to OpenAI account limits. Recent experience: 429 errors (Too Many Requests) may occur if quota is exceeded or requests are too frequent. See [API Error Handling](#api-error-handling).
+- **Image Limits**: Max 20MB, typical glasses photos 1-5MB
+
+### ElevenLabs (via MentraOS)
+- **Cost**: Handled by MentraOS subscription
+- **Latency**: 1-2 seconds for typical explanation length
+- **Quality**: High-fidelity voice synthesis
+- **Streaming**: Real-time audio delivery to glasses
+
+### Total Pipeline Performance
+- **End-to-end latency**: 4-7 seconds (capture → analysis → speech)
+- **Breakdown**: 
+  - Photo capture: 0.5s
+  - GPT-4V analysis: 2-4s  
+  - ElevenLabs synthesis: 1-2s
+  - Audio delivery: 0.5s
+
+## API Error Handling
+
+### OpenAI Errors
+- **Rate limiting (429 Too Many Requests)**: User will hear an error message if quota is exceeded or requests are too frequent. Exponential backoff and retry logic recommended for production. In current testing, 429 errors may occur if OpenAI usage limits are hit.
+- **Network issues**: Retry with fallback error message
+- **Invalid responses**: Graceful degradation to basic description
+- **Cost overruns**: Request volume monitoring and alerts
+
+### ElevenLabs Errors  
+- **Voice synthesis failures**: Fall back to system TTS
+- **Network issues**: Cached audio for common phrases
+- **Quality degradation**: Automatic model fallback
+
+## Security & Privacy
+
+### API Key Management
+- **Storage**: Environment variables only, never committed to code
+- **Rotation**: Regular key rotation recommended
+- **Scope**: Minimal necessary permissions for each API
+
+### Image Data Privacy
+- **Transmission**: Images sent to OpenAI for analysis only
+- **Storage**: Not permanently stored by OpenAI (per their policies)
+- **Local caching**: Temporary local storage for debugging, cleared on restart
+- **User control**: Clear opt-in for cloud processing
+
+### Voice Data Privacy
+- **Processing**: Handled by MentraOS/ElevenLabs partnership
+- **Storage**: Temporary synthesis only, not permanently stored
+- **Transmission**: Encrypted audio streams to glasses
+
+## Development & Testing
+
+### API Testing
+- **OpenAI**: Test with sample images during development
+- **ElevenLabs**: Test with sample text for voice quality
+- **Integration**: End-to-end pipeline testing with real captures
+
+### Debugging Tools
+- **Event timeline**: Track API calls and responses
+- **Photo viewer**: Verify image quality before API submission  
+- **Metrics endpoint**: Monitor API usage and performance
+- **Error logging**: Detailed API error tracking and reporting
+
+## Future Optimizations
+
+### Performance
+- **Image compression**: Optimize image size before API submission
+- **Caching**: Cache common object/scene analyses
+- **Streaming**: Real-time audio streaming during analysis
+- **Local processing**: Hybrid local/cloud analysis for speed
+
+### Cost Management
+- **Smart batching**: Combine related requests when possible
+- **Usage monitoring**: Track costs and implement usage limits
+- **Fallback models**: Use cheaper models for simple scenarios
+- **User controls**: Let users choose speed vs. cost tradeoffs

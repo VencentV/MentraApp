@@ -49,23 +49,32 @@
       font-size: 1.1em;
     }
 
-    .photo-container {
-      width: 100%;
+    .photo-card {
+      width: 420px;
+      min-height: 320px;
+      background: rgba(0,0,0,0.18);
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.18);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 400px;
+      justify-content: center;
+      margin-bottom: 18px;
+      border: 1.5px solid rgba(255,255,255,0.13);
+      position: relative;
+      overflow: hidden;
     }
-
     .photo {
-      max-width: 100%;
-      max-height: 60vh;
+      max-width: 95%;
+      max-height: 280px;
       object-fit: contain;
-      border-radius: 15px;
+      border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       transition: transform 0.3s ease;
+      background: #222;
+      margin: 0 auto;
+      display: block;
     }
-
     .photo:hover {
       transform: scale(1.02);
     }
@@ -106,12 +115,20 @@
     }
 
     .panel {
-      margin-top: 20px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 12px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+    }
+    #chatlog {
+      max-height: 180px;
+      overflow-y: auto;
+      word-break: break-word;
+      white-space: pre-line;
     }
     .panel h3 {
       margin: 0 0 8px 0;
@@ -142,11 +159,11 @@
       <h1>🔍 VisionTalk</h1>
       <p>AI-powered visual reasoning assistant</p>
     </div>
-    
-    <div class="photo-container">
+
+    <div class="photo-card">
       <div id="content" class="loading">Waiting for photos from your Mentra glasses...</div>
     </div>
-    
+
     <div class="instructions">
       <strong>How to use:</strong><br>
       Put on your Mentra glasses, look at anything interesting,<br>
@@ -164,9 +181,48 @@
       <h3>Latest photo metadata</h3>
       <div id="meta" style="font-size:12px;opacity:0.9">No photo yet</div>
     </div>
+
+    <div class="panel" style="margin-top:18px;">
+      <h3>Chat/Analysis Log</h3>
+      <div id="chatlog" style="min-height:32px;opacity:0.85;font-size:13px;"></div>
+    </div>
   </div>
 
   <script>
+    // Utility: Format event for chat/analysis log
+    function formatChatEvent(ev) {
+      const time = new Date(ev.ts).toLocaleTimeString();
+      let msg = '';
+      switch (ev.stage) {
+        case 'photo_sent_to_openai':
+          msg = `<b>Image sent to OpenAI</b> <span style='opacity:0.6'>[${time}]</span>`;
+          break;
+        case 'openai_response_received':
+          msg = `<b>OpenAI response</b> <span style='opacity:0.6'>[${time}]</span><br><span style='opacity:0.8'>${ev.detail?.excerpt || ''}</span>`;
+          break;
+        case 'tts_sent_to_elevenlabs':
+          msg = `<b>Sent to ElevenLabs TTS</b> <span style='opacity:0.6'>[${time}]</span>`;
+          break;
+        case 'tts_chunk_play_start':
+          msg = `<b>Playing analysis chunk...</b> <span style='opacity:0.6'>[${time}]</span>`;
+          break;
+        case 'tts_analysis_error':
+          msg = `<b style='color:#ff9999'>TTS Error</b> <span style='opacity:0.6'>[${time}]</span><br><span style='opacity:0.8'>${ev.detail?.message || 'An unknown audio error occurred.'}</span>`;
+          break;
+        case 'tts_played':
+          msg = `<b>Finished playing analysis</b> <span style='opacity:0.6'>[${time}]</span>`;
+          break;
+        case 'pipeline_complete':
+          msg = `<b>Pipeline complete</b> <span style='opacity:0.6'>[${time}]</span>`;
+          break;
+        default:
+          // Hide some of the more verbose events from the chat view
+          const hidden = ['tts_chunking', 'tts_chunk_done', 'tts_chunk_play_done', 'tts_generate_all_start', 'tts_generate_all_done', 'tts_playback_all_start', 'tts_playback_all_done'];
+          if (hidden.includes(ev.stage)) return '';
+          msg = `<span style='opacity:0.7'>${ev.stage}</span> <span style='opacity:0.5'>[${time}]</span>`;
+      }
+      return `<div style='margin-bottom:8px;'>${msg}</div>`;
+    }
     let currentRequestId = null;
     let connectionStatus = 'checking';
   let carouselLoaded = false;
@@ -221,10 +277,13 @@
         // Check if this is a new photo
         if (photoInfo.requestId !== currentRequestId) {
           currentRequestId = photoInfo.requestId;
-
-          // Update the display with new photo
-          document.getElementById('content').innerHTML =
-            '<img class="photo" src="/api/photo/' + photoInfo.requestId + '" alt="Latest captured image" />';
+          // Only update the image src, not the whole element, to prevent flicker/layout shift
+          let img = document.querySelector('#content img.photo');
+          if (!img) {
+            document.getElementById('content').innerHTML = '<img class="photo" src="" alt="Latest captured image" />';
+            img = document.querySelector('#content img.photo');
+          }
+          img.src = '/api/photo/' + photoInfo.requestId;
           // Refresh carousel when new photo arrives
           loadCarousel();
           loadPhotoMeta(photoInfo.requestId);
@@ -285,17 +344,37 @@
         const resp = await fetch('/api/events');
         if (!resp.ok) return;
         const data = await resp.json();
-        const events = (data.events || []).slice(-20).reverse(); // newest first
+        const events = (data.events || []).slice(-40).reverse(); // newest first
+        // Timeline panel (all events)
         const t = document.getElementById('timeline');
         if (!events.length) {
           t.innerHTML = '<div>—</div><div>No events yet</div>';
-          return;
+        } else {
+          t.innerHTML = events.map(ev => {
+            const time = new Date(ev.ts).toLocaleTimeString();
+            const excerpt = ev.detail && ev.detail.excerpt ? ' — ' + ev.detail.excerpt : '';
+            return `<div>${time}</div><div><span class="badge">${ev.stage}</span>${excerpt}</div>`;
+          }).join('');
         }
-        t.innerHTML = events.map(ev => {
-          const time = new Date(ev.ts).toLocaleTimeString();
-          const excerpt = ev.detail && ev.detail.excerpt ? ' — ' + ev.detail.excerpt : '';
-          return `<div>${time}</div><div><span class="badge">${ev.stage}</span>${excerpt}</div>`;
-        }).join('');
+        // Chat/analysis log (pipeline events only)
+        const chatlog = document.getElementById('chatlog');
+        const pipelineStages = [
+          'photo_sent_to_openai',
+          'openai_response_received',
+          'tts_sent_to_elevenlabs',
+          'tts_chunking',
+          'tts_chunk_start',
+          'tts_chunk_done',
+          'tts_analysis_error',
+          'tts_played',
+          'pipeline_complete'
+        ];
+        const chatEvents = events.filter(ev => pipelineStages.includes(ev.stage));
+        if (!chatEvents.length) {
+          chatlog.innerHTML = '<span style="opacity:0.7">No analysis yet.</span>';
+        } else {
+          chatlog.innerHTML = chatEvents.map(formatChatEvent).join('');
+        }
       } catch {}
     }
 

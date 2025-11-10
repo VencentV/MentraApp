@@ -1,0 +1,14 @@
+node_modules/
+.env
+*.log
+*.tmp
+.DS_Store
+.vscode/
+dist/
+build/
+package-lock.json
+MentraOS-cloud-functions/
+AceSense/
+VisionTalk_backup_v1/
+0_Mentra_Documenation/
+example_projects/

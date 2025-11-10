@@ -1,0 +1,109 @@
+VisionTalk — Project Specification
+=================================
+
+Date: 2025-11-09
+
+1) What this project is
+- VisionTalk is a proof-of-concept AR assistant for Mentra smart glasses. It captures a photo from the glasses on a button press, sends the image to an LLM (GPT-4o/gpt-4V style chat completion) for analysis, and speaks the analysis back to the wearer using TTS. A web dashboard shows the latest photo, history, and a timeline of pipeline events.
+
+2) Why it exists
+- To demonstrate end-to-end multimodal assistance on constrained wearable hardware: capture → cloud analysis → audio explanation. The goal is to validate the pipeline, telemetry, and UX patterns for on-body visual reasoning.
+
+3) How it works (high level)
+- User presses the physical button on the glasses.
+- AppServer registers the button event and routes to either: capture-only flow (fast chime + cache) or full analysis flow.
+- Full flow steps: pre-capture TTS prompt → request photo → confirmation chime → send image to OpenAI (chat completion with image data) → receive analysis text → speak analysis in chunks via TTS.
+- The web dashboard polls server endpoints to display latest photo and event timeline.
+
+4) End-to-end sequence (detailed)
+- onSession starts and registers `session.events.onButtonPress` immediately.
+- Welcome speech is triggered asynchronously (guarded to avoid duplicates).
+- Button (short press) triggers `handlePhotoAndAnalysis` or `handleCaptureOnly`.
+- `handlePhotoAndAnalysis`:
+	- speak pre-capture prompt (speakWithEvent)
+	- request photo (requestPhotoWithTimeout)
+	- cache photo (cachePhoto)
+	- play chime (playAudio)
+	- speak "Analyzing..."
+	- call analyzeImageWithGPT4V (POST to OpenAI Chat Completions with a data: URL image payload)
+	- record events and then play analysis using playTTSInChunks (sequential speak per chunk)
+
+5) Tools and libraries used
+- Node.js + TypeScript
+- Express + EJS for the dashboard
+- Mentra SDK (AppServer, AppSession, session.camera.requestPhoto, session.audio.speak, session.audio.playAudio, session.events)
+- OpenAI Chat Completions API (POST /v1/chat/completions) for image analysis
+- ElevenLabs-style TTS via Mentra audio.speak (the SDK forwards to a TTS provider)
+- crypto for hashes, dotenv for env
+
+6) Important files / code areas
+- `src/index.ts` — main app server and pipeline. Key functions:
+	- onSession: session lifecycle, button handler registration, welcome TTS
+	- handlePhotoAndAnalysis(session, voiceConfig)
+	- handleCaptureOnly(session)
+	- analyzeImageWithGPT4V(photo)
+	- speakWithEvent(session, text, voiceConfig, stage)
+	- playTTSInChunks(session, text, voiceConfig)
+	- requestPhotoWithTimeout(session, timeoutMs)
+	- cachePhoto(photo, userId)
+	- setupWebviewRoutes(): mounts the dashboard and static assets (now serves /assets)
+- `views/photo-viewer.ejs` — dashboard UI: photo card, timeline, chat/analysis log
+- `assets/` — static files (chime-sound.mp3 must be present for chime playback)
+
+7) External API calls and interactions
+- Mentra SDK (local device cloud connection) — session lifecycle, audio and camera APIs. These are the on-device primitives the app calls; responses/logs come from the device and Mentra cloud.
+- OpenAI Chat Completions API
+	- Endpoint: POST https://api.openai.com/v1/chat/completions
+	- Authorization: Bearer OPENAI_API_KEY
+	- Payload includes a system prompt, a user text prompt, and an image as a data: URL in the messages array.
+- ElevenLabs / Mentra TTS
+	- session.audio.speak(text, voiceConfig) is used to generate and play speech.
+	- session.audio.playAudio({ audioUrl }) is used for chime playback.
+
+8) Diagnostics and observability
+- Endpoints exposed for monitoring and debugging:
+	- GET /health — application health and state
+	- GET /api/latest-photo, /api/photo/:id, /api/photos — photo access
+	- GET /api/events — pipeline event timeline
+	- GET /api/state — internal state snapshot
+	- GET /debug/env — redacted environment info
+	- GET /metrics — lightweight metrics
+- Events emitted include: capture_init, photo_request_start/ok/error, photo_cached, photo_sent_to_openai, openai_response_received, tts_sent_to_elevenlabs, tts_chunking, tts_chunk_start/done, tts_played, pipeline_complete, plus welcome_tts_* and chime events.
+
+9) Current blockers & known issues
+- Duplicate audio playback: user hears the same TTS twice in some situations. Mitigations added:
+	- `welcomePlayed` flag and startup debounce
+	- `lastTTSHash` + `AUDIO_DUPLICATE_SUPPRESS_MS` suppression for near-duplicate TTS
+	- `shuttingDown` guard to avoid flushing queued TTS during onStop
+	But duplication still occurs intermittently — likely causes:
+	1) Device-side replay or retries in Mentra AudioManager (SDK may replay or ack twice)
+ 2) Two quick events triggering the same speak (race) before suppression window
+ 3) Earlier buffer+play approach caused double-playback (resolved)
+
+- Photo capture reliability: camera.requestPhoto can hang or timeout on device. Mitigations:
+	- `requestPhotoWithTimeout(session, 20000)` added
+	- single retry attempted on timeout with separate events
+	Remaining problem: some captures still fail intermittently — could be device camera driver, connectivity, or SDK edge cases.
+
+- TTS timeouts / long analysis: long analysis texts previously caused TTS timeout when generating long audio. We reverted a buffer+play pattern and now speak chunks sequentially; this reduced but did not completely eliminate TTS issues in all environments.
+
+10) Recommended next steps (prioritized)
+1. Implement an AudioQueue (single in-process FIFO) that serializes all speak/playAudio requests, handles retries, and exposes cancel/abort. This will remove most app-level races and make behavior deterministic.
+2. Add richer telemetry: per-audio generation/play latency, model_id, voice_id, total bytes, and device ack timings. Expose via `/api/audio-status` or extend `/api/events` with structured metrics.
+3. Make timeouts configurable via env (PHOTO_TIMEOUT_MS, AUDIO_DUPLICATE_SUPPRESS_MS) and add sane defaults.
+4. Add functional tests / harness for simulated session flows (mock AppSession) to reproduce duplicates deterministically.
+5. If duplicates persist after queueing, coordinate with Mentra SDK team to inspect device-side audio manager behavior (retries, acks, or replay).
+
+11) How you can validate fixes locally
+- Place `assets/chime-sound.mp3` in the repo and restart server. Verify:
+	- GET /assets/chime-sound.mp3 returns 200
+	- Connect the glasses and start a session; watch `/api/events` for single welcome_tts_start/done
+	- Press the button once; expect a single pre-capture TTS, one chime after capture, and chunked analysis speech (no duplicates)
+	- If photo times out, you should see photo_request_start → photo_request_error → photo_request_retry → photo_request_ok_retry or an eventual error event.
+
+12) Contacts & context
+- This repo lives in v:\GitHub\MentraApp (branch: main). The core app server is `VisionTalk` in `VisionTalk/src/index.ts` and the dashboard in `VisionTalk/views/photo-viewer.ejs`.
+- If you need me to implement the AudioQueue (Phase 1) and telemetry endpoints, I can do that next; it is the highest impact change to stabilize audio behavior.
+
+End of project spec.
+

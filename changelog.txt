@@ -1,0 +1,43 @@
+ # VisionTalk Code Review & Audio Manager Notes
+
+ Date: 2025-11-09
+
+ Summary
+ - Performed a quick codebase review focusing on audio, TTS, and capture flow. Recorded issues found, immediate fixes applied, and recommendations for medium-term improvements.
+
+ Immediate findings
+ - Duplicate welcome audio: likely caused by session reconnect/start race and/or lack of debounce; mitigated by adding `welcomePlayed` flag and a short `startupSpeakDebounceUntil` window in `speakWithEvent`.
+ - Missing chime asset: the code was updated to use `/assets/chime-sound.mp3` but the actual file was not present in the `assets/` folder — chime will fail silently. Added static middleware so files placed in repo `assets/` will be served via `/assets/*`.
+ - TTS whiplash on shutdown: observed queued chunked TTS being emitted when app stops; added `shuttingDown` guard and abort of chunk loop to avoid flushing queued audio on stop.
+ - Photo capture hanging: added `requestPhotoWithTimeout(session, 20000)` wrapper to avoid indefinite hangs (20s default). If timeouts occur often, make timeout configurable via env.
+
+ Code-level issues noticed
+ - No static asset middleware originally, so local chime path would 404 — added `app.use('/assets', express.static(path.join(process.cwd(), 'assets')))` in `setupWebviewRoutes`.
+ - Startup debounce may suppress legitimate early TTS (e.g., if user presses the button immediately). Current debounce is short (1500ms) but this tradeoff should be monitored.
+ - `session.audio.speak` and `session.audio.playAudio` are used in several places without a global audio queue/arbiter; this can cause overlapping or unexpected behavior on device reconnection or retries.
+ - Error handling often logs minimal context (message only). For audio and remote calls, capture model_id, voice_id, length, and timing for better diagnostics.
+ - The earlier attempted "buffer + play" approach caused duplicate playback because the SDK does not have a reliable generate-only path; we reverted to sequential speak-per-chunk and added guards.
+
+ Immediate actions taken
+ - Added `welcomePlayed`, `startupSpeakDebounceUntil`, and `shuttingDown` guards to `src/index.ts`.
+ - Added `requestPhotoWithTimeout` wrapper (20s default) and replaced direct `session.camera.requestPhoto()` calls with it.
+ - Mounted `/assets` static middleware so chime can be served locally from `assets/chime-sound.mp3`.
+
+ What to do now (practical next steps)
+ 1. Place `chime-sound.mp3` under the repository `assets/` folder. Once present, verify:
+	 - `GET http://localhost:3000/assets/chime-sound.mp3` returns 200 and playable audio.
+	 - `STARTUP_CHIME=true` produces a startup chime after the welcome TTS (if desired).
+ 2. Test a full capture cycle and watch `/api/events` to confirm `welcome_tts_start/done`, `photo_request_start/ok`, `chime_play/done`, and TTS chunk events. Ensure only one welcome TTS is emitted.
+ 3. If duplicates persist, instrument more telemetry: last TTS request hash, device-side retries, and timestamps for SDK-level acknowledgements.
+
+ Recommended medium-term improvements (prioritized)
+ 1. Implement a unified AudioQueue (single FIFO) to arbitrate `speak()` and `playAudio()` calls. The queue should expose cancel/abort and a short duplicate-suppression window.
+ 2. Add per-request telemetry: generation_start/end, playback_start/end, model_id, voice_id, total_bytes, and latency metrics; expose via `/api/audio-status`.
+ 3. Implement adaptive chunk prefetch with a sliding window (prefetch 1 chunk ahead) rather than naive full parallel generation or strictly serial generation.
+ 4. Configurable env variables: `PHOTO_TIMEOUT_MS`, `AUDIO_STARTUP_DEBOUNCE_MS`, `MAX_TTS_CHARS`, `AUDIO_QUEUE_MAX`.
+ 5. Add retry/backoff for transient TTS failures and a graceful fallback to a short summary if repeated TTS generation fails.
+
+ Notes about the SDK
+ - The Mentra `AudioManager` supports `speak(text, options)` and `playAudio({audioUrl})`. It also provides `stopAudio()` to cancel playback. Use these to implement an in-process queue and graceful abort on shutdown.
+
+ If you want, I can implement Phase 1 (AudioQueue + duplicate suppression + audio-status endpoint) next. Also I can add a small check at startup that verifies the chime file exists and logs a clear error if missing.

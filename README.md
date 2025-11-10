@@ -179,6 +179,7 @@ VisionTalk/
 ## Run
 - npm run dev
 - ngrok http http://127.0.0.1:3000
+- https://dashboard.ngrok.com/get-started/setup/windows
 
 
 ---
