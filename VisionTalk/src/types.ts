@@ -34,6 +34,13 @@ export interface UserState {
   startupDebounceUntil?: number;
   lastTTSHash?: string | null;
   lastTTSAt?: number;
+  audioChain?: Promise<void>;
+  capabilities?: any;
+  // Full text of latest AI analysis (GPT-4V) for webview display
+  latestAnalysis?: string;
+  latestAnalysisAt?: number;
+  // Map of photo requestId -> analysis text and timestamp
+  analysisByRequestId?: Record<string, { text: string; at: number }>;
 }
 
 export type LogLevel = 'silent' | 'error' | 'warn' | 'info' | 'debug'

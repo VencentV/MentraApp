@@ -1,17 +1,34 @@
-import type { AppSession } from '@mentra/sdk'
+import type { AppSession, PhotoData } from '@mentra/sdk'
 import { vtLog } from '../log'
 
-type PhotoDetail = {
-  buffer: Buffer
-  mimeType: string
-  size: number
-  filename?: string
-  // requestId may not be present in SDK response; keep optional
-  requestId?: string
-  timestamp?: Date
+export async function requestPhotoWithTimeout(
+  session: AppSession,
+  timeoutMs: number,
+  recordEvent?: (stage: string, detail?: any, error?: string) => void,
+  size: 'small' | 'medium' | 'large' = 'medium'
+): Promise<PhotoData> {
+  recordEvent?.('photo_request_start', { timeoutMs, size })
+  let timeoutHandle: NodeJS.Timeout | null = null
+  try {
+    const photo = await Promise.race([
+      session.camera.requestPhoto({ size }),
+      new Promise<never>((_resolve, reject) => {
+        timeoutHandle = setTimeout(() => reject(new Error('photo_request_timeout')), timeoutMs)
+      })
+    ])
+    if (timeoutHandle) clearTimeout(timeoutHandle)
+    recordEvent?.('photo_request_ok')
+    return photo as PhotoData
+  } catch (err: any) {
+    if (timeoutHandle) clearTimeout(timeoutHandle)
+    const msg = err?.message || String(err)
+    recordEvent?.('photo_request_error', {}, msg)
+    vtLog('warn', 'Photo request failed', { error: msg })
+    throw err
+  }
 }
 
-type PhotoOptions = {
+export type PhotoOptions = {
   attempts?: number
   initialTimeoutMs?: number
   backoffMs?: number
@@ -22,7 +39,7 @@ export async function requestPhotoRobust(
   session: AppSession,
   recordEvent?: (stage: string, detail?: any, error?: string) => void,
   options: PhotoOptions = {}
-): Promise<PhotoDetail> {
+): Promise<PhotoData> {
   const attempts = options.attempts ?? 3
   const timeoutMs = options.initialTimeoutMs ?? 15000
   const backoffMs = options.backoffMs ?? 750
@@ -36,48 +53,23 @@ export async function requestPhotoRobust(
 
   let lastErr: any
   for (let i = 0; i < attempts; i++) {
-    recordEvent?.('photo_request_attempt', { attempt: i + 1, size })
-    vtLog('debug', `requestPhoto options: ${JSON.stringify({ size })}`)
     try {
-      const photo = await withTimeout(session.camera.requestPhoto({ size }) as any, timeoutMs)
-      if (!photo?.buffer || photo.buffer.length === 0) {
-        throw new Error('empty_photo_buffer')
-      }
-      const detail: PhotoDetail = {
-        buffer: photo.buffer,
-        mimeType: photo.mimeType || 'image/jpeg',
-        size: photo.size ?? photo.buffer.length,
-        filename: photo.filename,
-        requestId: (photo as any).requestId,
-        timestamp: new Date()
-      }
-      recordEvent?.('photo_request_success', { attempt: i + 1, size: detail.size, mimeType: detail.mimeType })
-      return detail
+      recordEvent?.('photo_request_attempt', { attempt: i + 1, size })
+      vtLog('debug', `requestPhoto options: ${JSON.stringify({ size })}`)
+      const photo = await requestPhotoWithTimeout(session, timeoutMs, recordEvent, size)
+      recordEvent?.('photo_request_success', { attempt: i + 1, requestId: (photo as any).requestId })
+      return photo
     } catch (err: any) {
       lastErr = err
       const msg = err?.message || String(err)
-      vtLog('warn', 'Photo request attempt failed', { attempt: i + 1, error: msg })
       recordEvent?.('photo_request_attempt_failed', { attempt: i + 1 }, msg)
-
+      vtLog('warn', 'Photo request attempt failed', { attempt: i + 1, error: msg })
       if (msg.includes('permission') || msg.includes('not_available')) break
-      if (i < attempts - 1) {
-        await sleep(backoffMs * (i + 1))
-      }
+      if (i < attempts - 1) await sleep(backoffMs * (i + 1))
     }
   }
-
   recordEvent?.('photo_request_failed_all_attempts', {}, lastErr?.message)
   throw lastErr || new Error('photo_request_failed_all_attempts')
-}
-
-async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
-  let to: NodeJS.Timeout
-  return await Promise.race<T>([
-    p,
-    new Promise<T>((_, reject) => {
-      to = setTimeout(() => reject(new Error('photo_request_timeout')), ms)
-    })
-  ]).finally(() => clearTimeout(to!))
 }
 
 function sleep(ms: number) {

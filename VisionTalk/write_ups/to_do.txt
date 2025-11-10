@@ -1,0 +1,113 @@
+VisionTalk Audio Routing Investigation – Write‑up
+
+Last updated: 2025‑11‑10
+
+Overview
+- App: VisionTalk (Node/TypeScript + Express + EJS)
+- SDK: @mentra/sdk 2.1.27 (AppServer/AppSession, session.audio.speak/playAudio, session.camera)
+- Environment: Dev via tsx --watch, ngrok tunnel for MentraOS; audio typically heard through phone/earbuds by default according to docs
+
+Problem Statement
+- User perceives “double” audio (echo/duplicate voice) when VisionTalk speaks.
+- At the same time, server logs and our event timeline consistently show a single TTS playback per interaction.
+- Audio often routes to phone/earbuds; glasses are not always selectable as an audio output in the phone UI.
+
+What We Explored
+1) Code paths that could cause duplicate playback
+	- Multiple TTS calls per event
+	- Overlap between chime and TTS
+	- Concurrent sessions per user
+	- Chunked TTS sequencing overlap
+
+2) SDK capabilities and routing behavior
+	- session.audio.speak vs session.audio.playAudio
+	- Capabilities snapshot (hasSpeaker, hasCamera, etc.)
+	- Documentation note: “audio routes through your phone by default”
+
+3) Diagnostics to isolate server vs routing
+	- TTS‑only, Chime‑only, Play‑URL, Speak‑raw endpoints under /api/diag/audio/*
+	- Event timeline (/api/events) to verify number and order of playback events
+	- Health and capabilities snapshots (/health, /api/capabilities)
+
+What We Tried (Server‑Side)
+- Serialized audio per user with an audio queue (withAudioQueue) to prevent overlaps.
+- Duplicate‑suppression guard for TTS (hash + time window) to avoid near‑identical replays.
+- Split long TTS into chunks and play sequentially to avoid long‑running requests overlap.
+- Conditional chime: added CAPTURE_CHIME_ENABLED to disable capture chime to reduce perceived doubling.
+- Consolidated and simplified startup audio: welcome plays once; optional startup chime controlled by env.
+- Added diagnostics routes and verified event traces (start/done) line up as a single chain per interaction.
+- Snapshot device capabilities at session start to understand routing possibilities.
+
+What Hasn’t Worked / Dead Ends
+- Could not reproduce a genuine double‑invoke in server code; traces always show a single TTS request.
+- Changing chunk sizes / sequencing doesn’t affect the perceived duplication.
+- Removing chime eliminates chime+voice overlap, but user still perceives doubling when using other bluetooth devices as system audio default like with earbuds.
+
+Current Assessment (Likely Cause)
+- The observed doubling is routing‑side, not server‑side. MentraOS routes audio through the phone by default; earbuds/headphones or phone audio processing (DSP/spatial/voice enhancement) can create an echo/doubling perception.
+- Another possibility is dual sinks (phone speaker + BT device) or platform features (iOS/Android accessibility, “announce notifications”, spatial/mono/stereo effects) creating a small delayed second path.
+- Our server issues exactly one playback per action; timelines confirm. Therefore, code duplication is not the cause.
+
+Evidence Supporting This
+- Event timeline shows a single TTS start/done per user gesture.
+- Disabling the chime prevents any chime+TTS overlap; doubling perception can still occur via earbuds.
+- No crashes or multiple handler registrations observed; per‑user serialization prevents concurrent speak/play.
+
+Actions Implemented
+- Per‑user audio queue and short post‑playback tail to avoid cut‑offs.
+- TTS duplicate suppression window (hash + timestamp) to avoid accidental repeats.
+- Robust camera capture with capability checks, timeouts and retry/backoff (separate from audio, but part of stability work).
+- Diagnostics endpoints: /api/diag/audio/tts-only, /chime-only, /speak-raw, /play-url, /test; /api/events and /api/events/clear; /api/active-sessions.
+- CAPTURE_CHIME_ENABLED env to disable capture chime by default in normal flow.
+- Capabilities snapshot and /api/capabilities endpoint for visibility.
+- Refactor to services (tts/camera/photos/openai) and per‑user state to simplify reasoning.
+
+Things That Are Not Causing It
+- Duplicate TTS invocations inside VisionTalk: confirmed by event logs.
+- Missing/invalid TypeScript imports (e.g., './log') or editor spell‑checker warnings: these do not affect runtime playback and were from backup folders/editor noise.
+
+Recommended Next Steps (Outside Server)
+1) Device/OS routing checks
+	- Ensure only one audio sink is active (disconnect other BT devices, disable multipoint temporarily).
+	- On phone, explicitly select the intended output for the Mentra app/session if possible.
+	- Disable spatial audio / head‑related transfer / DSP enhancements temporarily to test.
+	- Check accessibility features (mono audio, balance, “announce notifications”, “headphone accommodations”).
+
+2) MentraOS/SDK follow‑ups
+	- Ask if there’s a way to force audio route to glasses vs phone (API or setting).
+	- Request an event or API that exposes current audio route and sink info.
+	- Confirm expected latency and mixing rules when a BT headset is connected.
+
+3) App‑level optional additions
+	- Add a tiny “routing probe” endpoint that plays alternating left/right beeps (if supported) to help users identify echo vs stereo effects.
+	- Add a /api/stop-audio hook (already present) to immediately cancel any lingering playback for testing.
+	- Expose /api/diag/audio/config to toggle CAPTURE_CHIME_ENABLED at runtime for quick A/B.
+
+How To Reproduce/Verify Quickly
+1) Chime‑only test: GET /api/diag/audio/chime-only => Expect a single chime; listen for echo.
+2) TTS‑only test: GET /api/diag/audio/tts-only?text=Hello => Expect a single spoken phrase; check /api/events for single chain.
+3) URL playback: GET /api/diag/audio/play-url?url=... => External MP3 to rule out TTS.
+4) Review /api/events around tests to confirm single play.
+
+Status
+- Pipeline and server are stable; audio events are serialized and logged.
+- Perception of “double” audio persists intermittently with earbuds; assessed as routing‑side.
+- Workaround: keep CAPTURE_CHIME_ENABLED=false in normal flow to avoid stacking cues.
+
+Open Questions
+- Can MentraOS expose/allow selecting glasses as an audio sink directly from the app/session?
+- Are there known phone settings that cause mirrored output paths for connected devices?
+
+Quality Gates (today)
+- Build: PASS (server runs; tsx dev works; editor may show stale TS warnings from backup dirs)
+- Lint/Typecheck: Minor editor warnings (backup dirs and spell checker); not impactful.
+- Tests: None (manual diagnostics via endpoints).
+
+Appendix: Key Endpoints
+- /health – quick status
+- /api/events – recent event timeline; /api/events/clear
+- /api/capabilities – per‑user capabilities snapshot
+- /api/diag/audio/tts-only | /chime-only | /speak-raw | /play-url | /test
+- /api/active-sessions – list of users with active sessions
+- /api/stop-audio – stop current playback
+

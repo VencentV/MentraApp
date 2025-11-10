@@ -1,84 +1,91 @@
 import type { AppSession } from '@mentra/sdk'
-import { ENV } from '../config'
 import { vtLog } from '../log'
-import type { UserState, VoiceConfig } from '../types'
+import { ENV } from '../config'
+import type { VoiceConfig, UserState } from '../types'
 
-// Unified signature:
-// speakWithEvent(session, text, voiceConfig?, recordEvent?, state?, tag?)
 export async function speakWithEvent(
   session: AppSession,
   text: string,
-  voiceConfig?: VoiceConfig,
-  recordEvent?: (stage: string, detail?: any, error?: string) => void,
-  state?: UserState,
-  tag: string = 'tts'
-) {
-  // Optional duplicate suppression
+  voice: VoiceConfig,
+  recordEvent: (stage: string, detail?: any, error?: string) => void,
+  state: UserState,
+  stage: string
+): Promise<void> {
+  recordEvent(stage + '_start', { textExcerpt: text.substring(0, 120) })
+  // Duplicate suppression per user
   try {
-    if (state) {
-      const now = Date.now()
-      const hash = simpleHash(text)
-      const withinWindow = state.lastTTSAt && (now - state.lastTTSAt) < ENV.AUDIO_DUPLICATE_SUPPRESS_MS
-      if (withinWindow && state.lastTTSHash === hash) {
-        vtLog('debug', 'Suppressing duplicate TTS', { tag, msSinceLast: now - (state.lastTTSAt || 0) })
-        recordEvent?.(tag + '_suppressed', { textExcerpt: text.slice(0, 80) })
-        return { success: true, suppressed: true }
-      }
-      state.lastTTSAt = now
-      state.lastTTSHash = hash
+    const hash = await hashText(text + JSON.stringify(voice || {}))
+    if (state.lastTTSHash === hash && state.lastTTSAt && (Date.now() - state.lastTTSAt) < ENV.AUDIO_DUPLICATE_SUPPRESS_MS) {
+      vtLog('warn', 'Suppressing near-duplicate TTS', { stage, sinceMs: Date.now() - (state.lastTTSAt || 0) })
+      recordEvent('tts_duplicate_suppressed', { stage, excerpt: text.substring(0, 80) })
+      return
     }
+    state.lastTTSHash = hash
+    state.lastTTSAt = Date.now()
   } catch {}
 
-  recordEvent?.(tag + '_start', { textExcerpt: text.substring(0, 120) })
   try {
-    const res = await session.audio.speak(text, voiceConfig as any)
-    recordEvent?.(tag + '_done', { success: res?.success, duration: res?.duration })
-    return res
+    await session.audio.speak(text, voice as any)
+    recordEvent(stage + '_done')
   } catch (err: any) {
-    vtLog('warn', 'TTS speak failed', { tag, error: String(err) })
-    recordEvent?.(tag + '_error', { message: String(err) })
+    vtLog('error', `TTS speak error on stage ${stage}`, { error: err?.message || String(err) })
+    recordEvent(stage + '_error', {}, err?.message || String(err))
     throw err
   }
 }
 
-// Unified signature:
-// playTTSInChunks(session, text, voiceConfig?, recordEvent?, state?, tag?)
 export async function playTTSInChunks(
   session: AppSession,
   text: string,
-  voiceConfig?: VoiceConfig,
-  recordEvent?: (stage: string, detail?: any, error?: string) => void,
-  state?: UserState,
-  tag: string = 'tts_chunk'
+  voice: VoiceConfig,
+  recordEvent: (stage: string, detail?: any, error?: string) => void,
+  state: UserState,
+  maxCharsPerChunk: number = 450
 ) {
-  const chunks = chunkText(text, 350)
+  const chunks = splitIntoChunks(text, maxCharsPerChunk)
+  recordEvent('tts_chunking', { chunks: chunks.length, strategy: 'sequential_speak' })
   for (let i = 0; i < chunks.length; i++) {
-    const ctag = `${tag}_${i + 1}/${chunks.length}`
-    await speakWithEvent(session, chunks[i], voiceConfig, recordEvent, state, ctag)
+    const chunk = chunks[i]
+    recordEvent('tts_chunk_start', { chunk: i + 1, total: chunks.length })
+    try {
+      await speakWithEvent(session, chunk, voice, recordEvent, state, `tts_chunk_${i + 1}`)
+      recordEvent('tts_chunk_done', { chunk: i + 1, total: chunks.length })
+    } catch (err: any) {
+      vtLog('error', 'TTS chunk speak error', { chunk: i + 1, error: err?.message || String(err) })
+      recordEvent('tts_analysis_error', { chunk: i + 1, message: err?.message || String(err) }, err?.toString?.())
+      break
+    }
   }
 }
 
-function chunkText(s: string, maxLen: number): string[] {
-  if (!s) return []
-  if (s.length <= maxLen) return [s]
-  const parts: string[] = []
-  let start = 0
-  while (start < s.length) {
-    let end = Math.min(start + maxLen, s.length)
-    // try not to split mid-sentence
-    const period = s.lastIndexOf('.', end)
-    if (period > start + maxLen * 0.6) end = period + 1
-    parts.push(s.slice(start, end).trim())
-    start = end
+export function splitIntoChunks(text: string, maxChars: number): string[] {
+  const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/)
+  const chunks: string[] = []
+  let current = ''
+  for (const s of sentences) {
+    if (!s) continue
+    const candidate = current ? current + ' ' + s : s
+    if (candidate.length <= maxChars) {
+      current = candidate
+    } else {
+      if (current) chunks.push(current)
+      if (s.length <= maxChars) {
+        current = s
+      } else {
+        let idx = 0
+        while (idx < s.length) {
+          chunks.push(s.slice(idx, idx + maxChars))
+          idx += maxChars
+        }
+        current = ''
+      }
+    }
   }
-  return parts.filter(Boolean)
+  if (current) chunks.push(current)
+  return chunks.length ? chunks : [text]
 }
 
-function simpleHash(input: string): string {
-  let h = 0
-  for (let i = 0; i < input.length; i++) {
-    h = ((h << 5) - h) + input.charCodeAt(i)
-    h |= 0
-  }
-  return String(h)
+async function hashText(text: string): Promise<string> {
+  const { createHash } = await import('crypto')
+  return createHash('sha256').update(text).digest('hex')
 }

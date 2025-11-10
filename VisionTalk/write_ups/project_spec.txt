@@ -102,7 +102,7 @@ Date: 2025-11-09
 	- If photo times out, you should see photo_request_start → photo_request_error → photo_request_retry → photo_request_ok_retry or an eventual error event.
 
 12) Contacts & context
-- This repo lives in v:\GitHub\MentraApp (branch: main). The core app server is `VisionTalk` in `VisionTalk/src/index.ts` and the dashboard in `VisionTalk/views/photo-viewer.ejs`.
+- This repo lives in v:\GitHub\MentraApp\VisionTalk (branch: main). The core app server is `VisionTalk` in `VisionTalk/src/index.ts` and the dashboard in `VisionTalk/views/photo-viewer.ejs`.
 - If you need me to implement the AudioQueue (Phase 1) and telemetry endpoints, I can do that next; it is the highest impact change to stabilize audio behavior.
 
 End of project spec.

@@ -11,7 +11,7 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* allow vertical growth with page scroll */
       min-height: 100vh;
       font-family: 'Arial', sans-serif;
       color: white;
@@ -23,12 +23,12 @@
       border-radius: 20px;
       padding: 30px;
       max-width: 90vw;
-      max-height: 90vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch; /* let inner panels take full width */
       box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
       border: 1px solid rgba(255, 255, 255, 0.18);
+      margin: 40px auto 60px; /* add top spacing when not vertically centered */
     }
 
     .header {
@@ -124,6 +124,15 @@
   padding: 12px;
   box-sizing: border-box;
     }
+    #fullAnalysis {
+      /* allow dynamic growth with content */
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.4;
+      opacity: 0.9;
+      overflow: visible;
+      max-height: none;
+    }
     #chatlog {
       max-height: 180px;
       overflow-y: auto;
@@ -186,6 +195,11 @@
       <h3>Chat/Analysis Log</h3>
       <div id="chatlog" style="min-height:32px;opacity:0.85;font-size:13px;"></div>
     </div>
+    <div class="panel" style="margin-top:18px;">
+      <h3>Full Analysis</h3>
+      <div id="fullAnalysis" style="min-height:60px;"></div>
+      <div id="analysisMeta" style="margin-top:6px;font-size:11px;opacity:0.65"></div>
+    </div>
   </div>
 
   <script>
@@ -200,9 +214,15 @@
         case 'openai_response_received':
           msg = `<b>OpenAI response</b> <span style='opacity:0.6'>[${time}]</span><br><span style='opacity:0.8'>${ev.detail?.excerpt || ''}</span>`;
           break;
-        case 'tts_sent_to_elevenlabs':
-          msg = `<b>Sent to ElevenLabs TTS</b> <span style='opacity:0.6'>[${time}]</span>`;
+        case 'tts_sent_to_elevenlabs': {
+          const req = ev.detail?.requestId || (window.currentRequestId || 'latest');
+          const len = ev.detail?.length;
+          msg = `<b>Sent to ElevenLabs TTS</b> <span style='opacity:0.6'>[${time}]</span>` +
+                (len ? ` <span style='opacity:0.6'>(length: ${len})</span>` : '') +
+                `<div id="tts-text-${req}" style="margin-top:6px;padding:8px;background:rgba(255,255,255,0.06);border-radius:8px;white-space:pre-wrap;display:none"></div>` +
+                `<button data-req="${req}" class="show-tts-btn" style="margin-top:6px;font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer">Show full text</button>`;
           break;
+        }
         case 'tts_chunk_play_start':
           msg = `<b>Playing analysis chunk...</b> <span style='opacity:0.6'>[${time}]</span>`;
           break;
@@ -287,6 +307,8 @@
           // Refresh carousel when new photo arrives
           loadCarousel();
           loadPhotoMeta(photoInfo.requestId);
+          // Load full analysis specifically for this photo
+          loadFullAnalysisFor(photoInfo.requestId);
         }
       } catch (error) {
         console.error('Error checking for new photo:', error);
@@ -361,6 +383,7 @@
         const pipelineStages = [
           'photo_sent_to_openai',
           'openai_response_received',
+          'openai_response_ok',
           'tts_sent_to_elevenlabs',
           'tts_chunking',
           'tts_chunk_start',
@@ -374,9 +397,87 @@
           chatlog.innerHTML = '<span style="opacity:0.7">No analysis yet.</span>';
         } else {
           chatlog.innerHTML = chatEvents.map(formatChatEvent).join('');
+          // Wire up "Show full text" buttons for tts_sent_to_elevenlabs entries
+          const buttons = chatlog.querySelectorAll('.show-tts-btn');
+          buttons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const req = e.currentTarget.getAttribute('data-req');
+              const box = document.getElementById('tts-text-' + req);
+              if (!box) return;
+              if (box.style.display === 'block') {
+                box.style.display = 'none';
+                e.currentTarget.textContent = 'Show full text';
+                return;
+              }
+              try {
+                const r = await fetch('/api/analysis/by-request/' + encodeURIComponent(req));
+                if (r.ok) {
+                  const data = await r.json();
+                  box.textContent = data.analysis;
+                  box.style.display = 'block';
+                  e.currentTarget.textContent = 'Hide full text';
+                } else {
+                  // Fallback to latest
+                  const rl = await fetch('/api/analysis/latest');
+                  if (rl.ok) {
+                    const dl = await rl.json();
+                    box.textContent = dl.analysis;
+                    box.style.display = 'block';
+                    e.currentTarget.textContent = 'Hide full text';
+                  }
+                }
+              } catch {}
+            });
+          });
+        }
+        // Auto refresh full analysis when new analysis-related events appear
+        const hasAnalysisEvent = chatEvents.some(ev => ['openai_response_ok','tts_sent_to_elevenlabs','tts_chunk_start'].includes(ev.stage));
+        if (hasAnalysisEvent && currentRequestId) {
+          loadFullAnalysisFor(currentRequestId);
         }
       } catch {}
     }
+
+    async function loadFullAnalysis() {
+      try {
+        const resp = await fetch('/api/analysis/latest');
+        if (!resp.ok) {
+          if (resp.status === 404) {
+            document.getElementById('fullAnalysis').textContent = 'No analysis yet.';
+            document.getElementById('analysisMeta').textContent = '';
+          }
+          return;
+        }
+        const data = await resp.json();
+        const full = document.getElementById('fullAnalysis');
+        full.textContent = data.analysis;
+        const meta = document.getElementById('analysisMeta');
+        const timeStr = new Date(data.timestamp).toLocaleTimeString();
+        meta.textContent = `User: ${data.userId} | Length: ${data.length} chars | ${timeStr}`;
+      } catch (err) {
+        // Silent fail
+      }
+    }
+    async function loadFullAnalysisFor(requestId) {
+      try {
+        const resp = await fetch('/api/analysis/by-request/' + encodeURIComponent(requestId));
+        if (resp.ok) {
+          const data = await resp.json();
+          const full = document.getElementById('fullAnalysis');
+          full.textContent = data.analysis;
+          const meta = document.getElementById('analysisMeta');
+          const timeStr = new Date(data.timestamp).toLocaleTimeString();
+          meta.textContent = `User: ${data.userId} | Length: ${data.length} chars | ${timeStr} | Photo: ${data.requestId}`;
+          return;
+        }
+        // Fallback to latest if not found
+        loadFullAnalysis();
+      } catch {
+        // Fallback silently
+      }
+    }
+    // Initial attempt to load any existing analysis
+    loadFullAnalysis();
 
     // Poll events at a relaxed cadence
     loadEvents();

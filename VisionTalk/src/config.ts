@@ -25,6 +25,7 @@ export const ENV = {
   VT_HTTP_SAMPLE_RATE: Math.max(0, Math.min(1, parseFloat(process.env.VT_HTTP_SAMPLE_RATE || '0.033'))),
   STARTUP_CHIME: (process.env.STARTUP_CHIME || '').toLowerCase() === 'true',
   AUDIO_DUPLICATE_SUPPRESS_MS: Math.max(0, parseInt(process.env.AUDIO_DUPLICATE_SUPPRESS_MS || '1200', 10)),
+  CAPTURE_CHIME_ENABLED: (process.env.CAPTURE_CHIME_ENABLED || 'true').toLowerCase() === 'true',
 }
 
 export function getServerUrl(): string {

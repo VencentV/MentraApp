@@ -59,6 +59,7 @@ export async function analyzeImageWithGPT4V(
     throw new Error('No analysis received from GPT-4V')
   }
   vtLog('debug', `[GPT-4V] Analysis complete: ${analysis.substring(0, 100)}...`)
-  recordEvent?.('openai_response_ok', { excerpt: analysis.substring(0, 120) })
+  // Record both an excerpt (for compact timeline) and length metadata.
+  recordEvent?.('openai_response_ok', { excerpt: analysis.substring(0, 160), length: analysis.length })
   return analysis
 }
