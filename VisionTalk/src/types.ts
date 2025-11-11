@@ -9,6 +9,10 @@ export interface StoredPhoto {
   filename: string;
   size: number;
   sha256?: string;
+  // Orientation metadata (for diagnostics/UI)
+  orientationOriginal?: number; // EXIF orientation if present (1-8)
+  orientationApplied?: string;  // e.g., 'auto-rotate', 'none'
+  rotated?: boolean;            // true if buffer was transformed to match natural orientation
 }
 
 export type Message = {

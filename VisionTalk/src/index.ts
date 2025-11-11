@@ -180,10 +180,10 @@ class VisionTalkMentraApp extends AppServer {
       await speakWithEvent(session, 'Camera not available on this device.', voiceConfig, this.recordEvent.bind(this), state, 'tts_no_camera')
       return
     }
-    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750 })
+  const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
     this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
     vtLog('debug', `Photo captured`, { ts: photo.timestamp.toISOString(), req: photo.requestId, size: photo.size });
-  cachePhoto(photo, userId, state);
+    await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
 
     // 3. Play confirmation sound (optional)
     if (CAPTURE_CHIME_ENABLED) {
@@ -225,9 +225,9 @@ class VisionTalkMentraApp extends AppServer {
       await speakWithEvent(session, 'Camera not available on this device.', { } as any, this.recordEvent.bind(this), state, 'tts_no_camera')
       return
     }
-    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750 })
+  const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
     this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
-  cachePhoto(photo, userId, state);
+    await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
     // Soft confirmation chime (optional)
     if (CAPTURE_CHIME_ENABLED) {
       try {

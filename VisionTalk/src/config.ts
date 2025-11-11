@@ -27,6 +27,9 @@ export const ENV = {
   STARTUP_CHIME: (process.env.STARTUP_CHIME || '').toLowerCase() === 'true',
   AUDIO_DUPLICATE_SUPPRESS_MS: Math.max(0, parseInt(process.env.AUDIO_DUPLICATE_SUPPRESS_MS || '1200', 10)),
   CAPTURE_CHIME_ENABLED: (process.env.CAPTURE_CHIME_ENABLED || 'true').toLowerCase() === 'true',
+  PHOTO_CAPTURE_SIZE: (process.env.PHOTO_CAPTURE_SIZE || 'medium').toLowerCase(), // small|medium|large (default medium now)
+  PHOTO_CROP_TEXT_REGION: (process.env.PHOTO_CROP_TEXT_REGION || 'true').toLowerCase() === 'true',
+  PHOTO_ENHANCE: (process.env.PHOTO_ENHANCE || 'true').toLowerCase() === 'true',
 }
 
 export function getServerUrl(): string {
