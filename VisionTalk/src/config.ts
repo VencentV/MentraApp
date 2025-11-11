@@ -31,6 +31,8 @@ export const ENV = {
   // Simple center crop only (no enhancement)
   PHOTO_CENTER_CROP: (process.env.PHOTO_CENTER_CROP || 'true').toLowerCase() === 'true',
   PHOTO_CENTER_CROP_FACTOR: Math.max(0.1, Math.min(1, parseFloat(process.env.PHOTO_CENTER_CROP_FACTOR || '0.6'))),
+  // Blur detection
+  PHOTO_SHARPNESS_THRESHOLD: Math.max(1, Math.min(255, parseInt(process.env.PHOTO_SHARPNESS_THRESHOLD || '28', 10))),
 }
 
 export function getServerUrl(): string {

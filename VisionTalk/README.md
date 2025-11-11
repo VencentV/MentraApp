@@ -62,6 +62,7 @@ Invoke-WebRequest -UseBasicParsing -Headers @{ 'ngrok-skip-browser-warning'='tru
 - Free ngrok domains change when you restart the tunnel. Update `.env` PUBLIC_URL and the Console, then restart the VisionTalk app on the phone.
 - If a browser shows an ngrok warning page, add header `ngrok-skip-browser-warning: true` or use the `?ngrok-skip-browser-warning=1` query param.
 - Long-press the glasses button to reset the VisionTalk session.
+- Blur handling: each captured photo receives a Laplacian sharpness score. If `PHOTO_SHARPNESS_THRESHOLD` (default 28) exceeds the score, a low-quality hint is injected into the GPT prompt instructing best‑effort transcription with `?` for uncertain characters (no retake request). Score is visible in the webview metadata.
 
 ## Security
 - Never commit real API keys. Store them in `.env` locally.

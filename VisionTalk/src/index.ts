@@ -14,6 +14,7 @@ import { requestPhotoWithTimeout, requestPhotoRobust } from './services/camera'
 import { cachePhoto, getLatestPhoto } from './services/photos'
 import { produceCenterCrop } from './services/imageEnhance'
 import { analyzeImageWithGPT4V as analyzeImageService } from './services/openai'
+import { computeSharpnessScore } from './services/quality'
 
 /* ─────────────────────────────── Env Checks ─────────────────────────────── */
 function requireEnv(name: string, fallback?: string): string {
@@ -195,6 +196,20 @@ class VisionTalkMentraApp extends AppServer {
       this.recordEvent('photo_center_crop_cache_error', {}, String(err))
     }
 
+    // Quality: compute sharpness score and decide whether to apply low-quality hint
+    try {
+      const bufForScore = stored.centerCroppedBuffer || stored.buffer
+      const score = await computeSharpnessScore(bufForScore)
+      stored.sharpnessScore = score
+      const threshold = ENV.PHOTO_SHARPNESS_THRESHOLD
+      const lowQuality = score < threshold
+      state.latestSharpnessScore = score
+      state.latestLowQualityHintApplied = lowQuality
+      this.recordEvent('photo_sharpness_score', { requestId: photo.requestId, score, threshold, lowQuality })
+    } catch (err: any) {
+      this.recordEvent('photo_sharpness_error', {}, String(err))
+    }
+
     // 3. Play confirmation sound (optional)
     if (CAPTURE_CHIME_ENABLED) {
       this.recordEvent('chime_play');
@@ -206,7 +221,7 @@ class VisionTalkMentraApp extends AppServer {
     await this.withAudioQueue(userId, () => speakWithEvent(session, "Analyzing what I see...", voiceConfig, this.recordEvent.bind(this), state, 'tts_analyzing'))
 
   // 5. Analyze with GPT-4V (service)
-  const result = await analyzeImageService(photo, this.recordEvent.bind(this));
+  const result = await analyzeImageService(photo, this.recordEvent.bind(this), { lowQualityHint: !!state.latestLowQualityHintApplied, sharpnessScore: state.latestSharpnessScore });
   const analysis = result.analysis;
   const answer = result.answer;
   // Persist full analysis and short answer for webview retrieval (latest and per-photo)
@@ -532,6 +547,7 @@ class VisionTalkMentraApp extends AppServer {
         filename: p.filename,
   centerCropped: !!p.centerCroppedBuffer,
   centerCropSteps: p.centerCropSteps,
+        sharpnessScore: p.sharpnessScore,
         userId,
       });
     });

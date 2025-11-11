@@ -16,6 +16,8 @@ export interface StoredPhoto {
   // Center-cropped preview (no heavy enhancement)
   centerCroppedBuffer?: Buffer;
   centerCropSteps?: string[];
+  // Sharpness / quality metrics
+  sharpnessScore?: number; // Laplacian-based score (higher = sharper)
 }
 
 export type Message = {
@@ -50,6 +52,9 @@ export interface UserState {
   latestAnswer?: string;
   // Map of photo requestId -> analysis text and timestamp
   analysisByRequestId?: Record<string, { text: string; answer?: string; at: number }>;
+  // Latest sharpness score & whether low-quality hint applied
+  latestSharpnessScore?: number;
+  latestLowQualityHintApplied?: boolean;
 }
 
 export interface AnalysisResult {

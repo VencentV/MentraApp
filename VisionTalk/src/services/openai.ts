@@ -9,7 +9,8 @@ import { AnalysisResult } from '../types'
 
 export async function analyzeImageWithGPT4V(
   photo: PhotoData,
-  recordEvent?: (stage: string, detail?: any, error?: string) => void
+  recordEvent?: (stage: string, detail?: any, error?: string) => void,
+  options?: { lowQualityHint?: boolean; sharpnessScore?: number }
 ): Promise<AnalysisResult> {
   recordEvent?.('openai_request_init')
   // Minimal preprocessing: optional center crop only
@@ -24,6 +25,11 @@ export async function analyzeImageWithGPT4V(
 
   const messages: Message[] = [
     { role: 'system', content: SYSTEM_PROMPT },
+    // When the image may be blurry, instruct the model to attempt best-effort reading without demanding a retake.
+    ...(options?.lowQualityHint ? [{
+      role: 'system',
+      content: 'The photo may be blurry or low-contrast. Do not ask for a retake. Make your best effort to extract and answer any legible text. Where characters are unclear, use ? to indicate uncertainty. Keep ANSWER concise even if partial.'
+    } as Message] : []),
     { role: 'system', content: FEW_SHOT_EXAMPLES },
     { role: 'system', content: OUTPUT_FORMAT_RULES },
     { role: 'user', content: [
@@ -35,7 +41,7 @@ export async function analyzeImageWithGPT4V(
   const payload = { model: ENV.OPENAI_MODEL, messages, max_tokens: 850, temperature: 0.6 }
 
   vtLog('debug', '[GPT-4V] Sending image analysis request')
-  recordEvent?.('openai_request_sent', { model: ENV.OPENAI_MODEL, max_tokens: payload.max_tokens, prep: 'center_crop' })
+  recordEvent?.('openai_request_sent', { model: ENV.OPENAI_MODEL, max_tokens: payload.max_tokens, prep: 'center_crop', lowQualityHint: !!options?.lowQualityHint, sharpnessScore: options?.sharpnessScore })
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ENV.OPENAI_API_KEY}` },

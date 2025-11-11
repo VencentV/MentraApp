@@ -372,6 +372,7 @@
           <div><strong>size:</strong> ${p.size.toLocaleString()} bytes</div>
           <div><strong>mime:</strong> ${p.mimeType}</div>
           <div><strong>sha256:</strong> <code style="word-break:break-all">${p.sha256}</code></div>
+          <div><strong>sharpnessScore:</strong> ${p.sharpnessScore != null ? p.sharpnessScore.toFixed(2) : 'n/a'}</div>
         `;
       } catch {}
     }
