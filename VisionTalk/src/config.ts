@@ -28,8 +28,9 @@ export const ENV = {
   AUDIO_DUPLICATE_SUPPRESS_MS: Math.max(0, parseInt(process.env.AUDIO_DUPLICATE_SUPPRESS_MS || '1200', 10)),
   CAPTURE_CHIME_ENABLED: (process.env.CAPTURE_CHIME_ENABLED || 'true').toLowerCase() === 'true',
   PHOTO_CAPTURE_SIZE: (process.env.PHOTO_CAPTURE_SIZE || 'medium').toLowerCase(), // small|medium|large (default medium now)
-  PHOTO_CROP_TEXT_REGION: (process.env.PHOTO_CROP_TEXT_REGION || 'true').toLowerCase() === 'true',
-  PHOTO_ENHANCE: (process.env.PHOTO_ENHANCE || 'true').toLowerCase() === 'true',
+  // Simple center crop only (no enhancement)
+  PHOTO_CENTER_CROP: (process.env.PHOTO_CENTER_CROP || 'true').toLowerCase() === 'true',
+  PHOTO_CENTER_CROP_FACTOR: Math.max(0.1, Math.min(1, parseFloat(process.env.PHOTO_CENTER_CROP_FACTOR || '0.6'))),
 }
 
 export function getServerUrl(): string {

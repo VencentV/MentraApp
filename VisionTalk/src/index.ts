@@ -12,6 +12,7 @@ import { Message, StoredPhoto, UserState, VoiceConfig } from './types'
 import { speakWithEvent, playTTSInChunks } from './services/tts'
 import { requestPhotoWithTimeout, requestPhotoRobust } from './services/camera'
 import { cachePhoto, getLatestPhoto } from './services/photos'
+import { produceCenterCrop } from './services/imageEnhance'
 import { analyzeImageWithGPT4V as analyzeImageService } from './services/openai'
 
 /* ─────────────────────────────── Env Checks ─────────────────────────────── */
@@ -180,10 +181,19 @@ class VisionTalkMentraApp extends AppServer {
       await speakWithEvent(session, 'Camera not available on this device.', voiceConfig, this.recordEvent.bind(this), state, 'tts_no_camera')
       return
     }
-  const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
+    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
     this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
     vtLog('debug', `Photo captured`, { ts: photo.timestamp.toISOString(), req: photo.requestId, size: photo.size });
-    await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
+    const stored = await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
+    // Produce simple center crop (color preserved)
+    try {
+      const cc = await produceCenterCrop(photo, this.recordEvent.bind(this))
+      stored.centerCroppedBuffer = cc.buffer
+      stored.centerCropSteps = cc.steps
+      this.recordEvent('photo_center_crop_cached', { requestId: photo.requestId, steps: cc.steps })
+    } catch (err: any) {
+      this.recordEvent('photo_center_crop_cache_error', {}, String(err))
+    }
 
     // 3. Play confirmation sound (optional)
     if (CAPTURE_CHIME_ENABLED) {
@@ -225,9 +235,17 @@ class VisionTalkMentraApp extends AppServer {
       await speakWithEvent(session, 'Camera not available on this device.', { } as any, this.recordEvent.bind(this), state, 'tts_no_camera')
       return
     }
-  const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
+    const photo = await requestPhotoRobust(session, this.recordEvent.bind(this), { attempts: 3, initialTimeoutMs: 20000, backoffMs: 750, size: ENV.PHOTO_CAPTURE_SIZE as any })
     this.recordEvent('photo_received', { requestId: photo.requestId, size: photo.size, mimeType: photo.mimeType });
-    await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
+    const stored = await cachePhoto(photo, userId, state, this.recordEvent.bind(this));
+    try {
+      const cc = await produceCenterCrop(photo, this.recordEvent.bind(this))
+      stored.centerCroppedBuffer = cc.buffer
+      stored.centerCropSteps = cc.steps
+      this.recordEvent('photo_center_crop_cached', { requestId: photo.requestId, steps: cc.steps })
+    } catch (err: any) {
+      this.recordEvent('photo_center_crop_cache_error', {}, String(err))
+    }
     // Soft confirmation chime (optional)
     if (CAPTURE_CHIME_ENABLED) {
       try {
@@ -512,6 +530,8 @@ class VisionTalkMentraApp extends AppServer {
         size: p.size,
         sha256: p.sha256,
         filename: p.filename,
+  centerCropped: !!p.centerCroppedBuffer,
+  centerCropSteps: p.centerCropSteps,
         userId,
       });
     });
@@ -527,6 +547,20 @@ class VisionTalkMentraApp extends AppServer {
       if (!photo) return res.status(404).json({ error: "Photo not found" });
       res.set({ "Content-Type": photo.mimeType, "Cache-Control": "no-cache" });
       res.send(photo.buffer);
+    });
+
+    // Center-cropped photo bytes – searches across all users
+    app.get("/api/photo-center/:requestId", (req: any, res: any) => {
+      const { requestId } = req.params;
+      let photo: StoredPhoto | null = null;
+      for (const state of this.userState.values()) {
+        const p = state.photoHistory.find(ph => ph.requestId === requestId);
+        if (p) { photo = p; break; }
+      }
+      if (!photo) return res.status(404).json({ error: "Photo not found" });
+      if (!photo.centerCroppedBuffer) return res.status(404).json({ error: "Center-cropped photo not available" });
+      res.set({ "Content-Type": photo.mimeType, "Cache-Control": "no-cache" });
+      res.send(photo.centerCroppedBuffer);
     });
 
     // Simple webview to preview photos

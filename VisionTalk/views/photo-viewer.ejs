@@ -169,8 +169,15 @@
       <p>AI-powered visual reasoning assistant</p>
     </div>
 
-    <div class="photo-card">
-      <div id="content" class="loading">Waiting for photos from your Mentra glasses...</div>
+    <div class="photo-card" style="width:860px;display:flex;flex-direction:row;gap:18px;align-items:flex-start;justify-content:center;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div style="font-size:12px;opacity:0.8;margin-bottom:6px;letter-spacing:0.5px;">INPUT IMAGE</div>
+        <div id="content" class="loading" style="width:100%;text-align:center;">Waiting for photos from your Mentra glasses...</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div style="font-size:12px;opacity:0.8;margin-bottom:6px;letter-spacing:0.5px;">CENTER CROP</div>
+        <div id="enhanced" class="loading" style="width:100%;text-align:center;">—</div>
+      </div>
     </div>
 
     <div class="instructions">
@@ -305,6 +312,13 @@
             img = document.querySelector('#content img.photo');
           }
           img.src = '/api/photo/' + photoInfo.requestId;
+          // enhanced area
+          let enh = document.querySelector('#enhanced img.photo');
+          if (!enh) {
+            document.getElementById('enhanced').innerHTML = '<img class="photo" src="" alt="Enhanced image" />';
+            enh = document.querySelector('#enhanced img.photo');
+          }
+          enh.src = '/api/photo-center/' + photoInfo.requestId;
           // Refresh carousel when new photo arrives
           loadCarousel();
           loadPhotoMeta(photoInfo.requestId);

@@ -3,7 +3,7 @@ import { vtLog } from '../log'
 import { ENV } from '../config'
 import type { Message } from '../types'
 import { SYSTEM_PROMPT, USER_PROMPT_PREFIX, FEW_SHOT_EXAMPLES, OUTPUT_FORMAT_RULES } from '../prompts'
-import { enhanceForOCR } from './imageEnhance'
+import { produceCenterCrop } from './imageEnhance'
 
 import { AnalysisResult } from '../types'
 
@@ -12,22 +12,13 @@ export async function analyzeImageWithGPT4V(
   recordEvent?: (stage: string, detail?: any, error?: string) => void
 ): Promise<AnalysisResult> {
   recordEvent?.('openai_request_init')
+  // Minimal preprocessing: optional center crop only
   let workingBuffer = photo.buffer as Buffer
   let mimeType = photo.mimeType
-  let enhanceSteps: string[] = []
-  if (ENV.PHOTO_ENHANCE) {
-    try {
-      const enh = await enhanceForOCR(photo, recordEvent)
-      workingBuffer = enh.buffer
-      enhanceSteps = enh.steps
-      // If converted to PNG we update mime
-      if (enhanceSteps.includes('to_png')) mimeType = 'image/png'
-    } catch (err: any) {
-      recordEvent?.('photo_enhance_unhandled_error', {}, err?.message || String(err))
-    }
-  } else {
-    recordEvent?.('photo_enhance_skipped', { reason: 'disabled' })
-  }
+  try {
+    const cc = await produceCenterCrop(photo, recordEvent)
+    workingBuffer = cc.buffer
+  } catch {}
   const base64Image = workingBuffer.toString('base64')
   const imageUrl = `data:${mimeType};base64,${base64Image}`
 
@@ -44,7 +35,7 @@ export async function analyzeImageWithGPT4V(
   const payload = { model: ENV.OPENAI_MODEL, messages, max_tokens: 850, temperature: 0.6 }
 
   vtLog('debug', '[GPT-4V] Sending image analysis request')
-  recordEvent?.('openai_request_sent', { model: ENV.OPENAI_MODEL, max_tokens: payload.max_tokens, enhanceSteps })
+  recordEvent?.('openai_request_sent', { model: ENV.OPENAI_MODEL, max_tokens: payload.max_tokens, prep: 'center_crop' })
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ENV.OPENAI_API_KEY}` },

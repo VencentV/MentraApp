@@ -13,6 +13,9 @@ export interface StoredPhoto {
   orientationOriginal?: number; // EXIF orientation if present (1-8)
   orientationApplied?: string;  // e.g., 'auto-rotate', 'none'
   rotated?: boolean;            // true if buffer was transformed to match natural orientation
+  // Center-cropped preview (no heavy enhancement)
+  centerCroppedBuffer?: Buffer;
+  centerCropSteps?: string[];
 }
 
 export type Message = {
